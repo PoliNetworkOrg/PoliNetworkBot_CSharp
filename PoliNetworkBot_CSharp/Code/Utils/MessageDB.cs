@@ -241,7 +241,8 @@ public static class MessageDb
         if (done != null && done.IsSuccess() == false)
             return new MessageSendScheduled(ScheduleMessageSentResult.FAILED_SEND, null, null, r1);
 
-        var q2 = "UPDATE Messages SET has_been_sent = TRUE WHERE id = " + dr["id"];
+        var o = dr["id"].ToString();
+        var q2 = $"UPDATE Messages SET has_been_sent = TRUE WHERE id = {o}";
         Database.Execute(q2, telegramBotAbstract?.DbConfig);
 
         return new MessageSendScheduled(ScheduleMessageSentResult.SUCCESS, null, null, r1);
@@ -391,9 +392,19 @@ public static class MessageDb
         };
         var text2 = new Language(dict);
         if (telegramBotAbstract != null)
-            return await telegramBotAbstract.SendTextMessageAsync(chatIdToSendTo.Value, text2, chatTypeToSendTo, "",
-                ParseMode.Html,
-                null, null, r1.GetMessageId(), true);
+        {
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = chatIdToSendTo.Value,
+                Text = text2,
+                ChatType = chatTypeToSendTo,
+                ReplyToMessageId = r1.GetMessageId(),
+                DisablePreviewLink = true
+            };
+            return await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+        }
+
         return null;
     }
 
@@ -624,7 +635,8 @@ public static class MessageDb
 
         if (botClass != null)
             return await botClass.SendPhotoAsync(chatIdToSendTo, photo,
-                caption, parseMode, typeOfChatSentInto.Value);
+                caption, parseMode, typeOfChatSentInto.Value, null);
+
         return null;
     }
 

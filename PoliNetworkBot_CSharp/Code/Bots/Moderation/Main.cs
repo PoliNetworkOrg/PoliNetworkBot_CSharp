@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
@@ -116,14 +117,15 @@ public static class Main
             }
 
             if (e.Edit == false)
-            {
+
                 if (e.Message.Text != null && e.Message.Text.StartsWith("/"))
                 {
                     var x = await CommandDispatcher.CommandDispatcherMethod(telegramBotClient, e);
                     return new ActionDoneObject(ActionDoneEnum.COMMAND, x, result.Item1);
                 }
-            }
 
+
+            Handle.HandleMethod(telegramBotClient, e);
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
             return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);
         }

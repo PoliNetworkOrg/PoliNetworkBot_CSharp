@@ -60,12 +60,18 @@ public static class MessageHandler
             {
                 Logger.WriteLine(e);
                 conversation.State = Data.Enums.ConversationState.START;
-                await botClient.SendTextMessageAsync(message.From.Id,
-                    new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
+
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = message.From.Id,
+                    Text = new L("it", "stiamo gestendo un numero elevato di richieste riprovare tra qualche minuto",
                         "en", "we are handling a large number of requests try again in a few minutes"),
-                    ChatType.Private, message.From!.LanguageCode, ParseMode.Html,
-                    new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                    null);
+                    ChatType = ChatType.Private,
+                    Lang = message.From?.LanguageCode,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
+                };
+                await botClient.SendTextMessageAsync(messageOptions);
             }
 
             return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
@@ -75,10 +81,16 @@ public static class MessageHandler
             Logger.WriteLine(exception);
             var errorText = new L("it", "E' avvenuto un errore interno al bot, riprova più tardi",
                 "en", "An internal error occurred in the bot, try again later");
-            await botClient.SendTextMessageAsync(message.From.Id, errorText, ChatType.Private,
-                message.From.LanguageCode,
-                ParseMode.Html,
-                null, null);
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From.Id,
+                Text = errorText,
+                ChatType = ChatType.Private,
+                Lang = message.From?.LanguageCode
+            };
+            await botClient.SendTextMessageAsync(messageOptions);
             return new ActionDoneObject(ActionDoneEnum.NONE, null, null);
         }
     }
@@ -104,9 +116,17 @@ public static class MessageHandler
                 markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
                 replyLang = new L("it", "Seleziona un opzione valida", "en", "Select a valid option");
-                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = message.From.Id,
+                    Text = replyLang,
+                    ChatType = ChatType.Private,
+                    Lang = langCode,
+                    ReplyMarkupObject = markupObject
+                };
+                return await botClient.SendTextMessageAsync(messageOptions);
             }
 
             conversation!.CurrentFunction = function;
@@ -126,9 +146,17 @@ public static class MessageHandler
                 conversation.State = Data.Enums.ConversationState.SELECT_DATE;
                 markupObject = ReplyMarkupGenerator.DateKeyboard();
                 replyLang = new L("it", "Seleziona una data", "en", "Select a date");
-                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = message.From.Id,
+                    Text = replyLang,
+                    ChatType = ChatType.Private,
+                    Lang = langCode,
+                    ReplyMarkupObject = markupObject
+                };
+                return await botClient.SendTextMessageAsync(messageOptions);
             case Data.Enums.Function.FREE_CLASSROOMS_NOW:
                 _ = SelectDate(botClient, message, null, true);
                 return null;
@@ -150,9 +178,17 @@ public static class MessageHandler
         var replyLang = new L("it", "Seleziona una sede", "en", "Select a campus");
 
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
-        _ = botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
+
+        var messageOptions = new TelegramBotAbstract.MessageOptions
+
+        {
+            ChatId = message.From?.Id,
+            Text = replyLang,
+            ChatType = ChatType.Private,
+            Lang = langCode,
+            ReplyMarkupObject = markupObject
+        };
+        _ = botClient.SendTextMessageAsync(messageOptions);
     }
 
     private static void ForceSelectCampus(TelegramBotAbstract telegramBotAbstract,
@@ -174,14 +210,22 @@ public static class MessageHandler
         L replyLang;
 
         var classRooms = Fetcher.GetAllClassrooms(conversation!.Campus!, conversation.Date);
-        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom.Contains(messageText) );
+        var uglyClassRoomWLineBreaks = classRooms?.Find(classRoom => classRoom.Contains(messageText));
         if (uglyClassRoomWLineBreaks == null)
         {
             markupObject = null;
             replyLang = new L("it", "Seleziona un'aula valida", "en", "Select a valid classroom");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From?.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = langCode,
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions);
         }
 
 
@@ -194,9 +238,17 @@ public static class MessageHandler
         if (fileString == null)
         {
             replyLang = new L("it", "Errore interno", "en", "Internal error");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From?.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = langCode,
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions);
         }
 
         var encoding = Encoding.UTF8;
@@ -209,8 +261,20 @@ public static class MessageHandler
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
         conversation.State = Data.Enums.ConversationState.MAIN;
         conversation.ResetConversationFunctions();
-        botClient.SendFileAsync(file, peer, message.From?.Username,
-            message.From?.LanguageCode, null, true, replyMarkup);
+
+        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+
+        {
+            documentInput = file,
+            ChatId = peer.GetUserId(),
+            peer = peer,
+            ChatType = ChatType.Private,
+            Lang = message.From?.LanguageCode,
+            ReplyMarkupObject = replyMarkup,
+            Username = message.From?.Username,
+            DisablePreviewLink = true
+        };
+        botClient.SendFileAsync(messageOptions2);
         return null;
     }
 
@@ -228,9 +292,17 @@ public static class MessageHandler
             markupObject = null;
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = langCode,
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions);
         }
 
         conversation!.StartHour = startHour;
@@ -238,9 +310,17 @@ public static class MessageHandler
         conversation.State = Data.Enums.ConversationState.SELECT_END_HOUR;
         markupObject = ReplyMarkupGenerator.HourSelector(startHour, 20);
         replyLang = new L("it", "A che orario?", "en", "To what time?");
-        return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
+
+        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+
+        {
+            ChatId = message.From.Id,
+            Text = replyLang,
+            ChatType = ChatType.Private,
+            Lang = langCode,
+            ReplyMarkupObject = markupObject
+        };
+        return await botClient.SendTextMessageAsync(messageOptions2);
     }
 
     private static async Task<MessageSentResult?> SelectEndHour(TelegramBotAbstract botClient, Message message,
@@ -254,9 +334,17 @@ public static class MessageHandler
             ReplyMarkupObject? markupObject = null;
 
             var replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = langCode,
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions);
         }
 
         conversation.EndHour = endHour;
@@ -284,10 +372,18 @@ public static class MessageHandler
                 "Internal error - No classrooms found in this campus");
             var markupObject = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
             conversation.State = Data.Enums.ConversationState.MAIN;
-            return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private,
-                message.From?.LanguageCode,
-                ParseMode.Html,
-                markupObject, null);
+
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From?.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = message.From?.LanguageCode,
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions);
         }
 
         var fixedFreeClassRooms = freeClassrooms?.Select(classRoom => classRoom.Trim()
@@ -304,10 +400,19 @@ public static class MessageHandler
         replyLang = new L("it", textIt, "en", textEn);
         conversation.State = Data.Enums.ConversationState.MAIN;
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
-        return await botClient.SendTextMessageAsync(message.From!.Id, replyLang, ChatType.Private,
-            message.From?.LanguageCode,
-            ParseMode.Html,
-            replyMarkup, null, splitMessage: true);
+
+
+        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+
+        {
+            ChatId = message.From?.Id,
+            Text = replyLang,
+            ChatType = ChatType.Private,
+            Lang = message.From?.LanguageCode,
+            ReplyMarkupObject = replyMarkup,
+            SplitMessage = true
+        };
+        return await botClient.SendTextMessageAsync(messageOptions2);
     }
 
     private static async Task<MessageSentResult?> SelectDate(TelegramBotAbstract botClient, Message message,
@@ -332,9 +437,19 @@ public static class MessageHandler
                 // Logger.WriteLine($"Selected invalid date in bot: {messageText}, {date}, {date > DateTime.Now.AddDays(ReplyMarkupGenerator.DaysAmount)}");
                 markupObject = null;
                 replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
-                return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                    ParseMode.Html,
-                    markupObject, null);
+
+
+                var messageOptions2 = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = message.From?.Id,
+                    Text = replyLang,
+                    ChatType = ChatType.Private,
+                    Lang = message.From?.LanguageCode,
+
+                    ReplyMarkupObject = markupObject
+                };
+                return await botClient.SendTextMessageAsync(messageOptions2);
             }
         }
 
@@ -351,9 +466,18 @@ public static class MessageHandler
                 if (fileString == null)
                 {
                     replyLang = new L("it", "Errore interno", "en", "Internal error");
-                    return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                        ParseMode.Html,
-                        markupObject, null);
+
+                    var messageOptions3 = new TelegramBotAbstract.MessageOptions
+
+                    {
+                        ChatId = message.From?.Id,
+                        Text = replyLang,
+                        ChatType = ChatType.Private,
+                        Lang = message.From?.LanguageCode,
+
+                        ReplyMarkupObject = markupObject
+                    };
+                    return await botClient.SendTextMessageAsync(messageOptions3);
                 }
 
                 var encoding = Encoding.UTF8;
@@ -365,8 +489,22 @@ public static class MessageHandler
                     TextAsCaption.AS_CAPTION);
                 var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
                 conversation.State = Data.Enums.ConversationState.MAIN;
-                botClient.SendFileAsync(file, peer, message.From?.Username,
-                    message.From?.LanguageCode, null, true, replyMarkup);
+
+
+                var messageOptions2 = new TelegramBotAbstract.MessageOptions
+
+                {
+                    documentInput = file,
+                    ChatId = peer.GetUserId(),
+                    peer = peer,
+                    ChatType = ChatType.Private,
+                    Lang = message.From?.LanguageCode,
+                    ReplyMarkupObject = replyMarkup,
+                    Username = message.From?.Username,
+                    DisablePreviewLink = true
+                };
+
+                botClient.SendFileAsync(messageOptions2);
                 return null;
             case Data.Enums.Function.FREE_CLASSROOMS:
                 conversation.State = Data.Enums.ConversationState.SELECT_START_HOUR;
@@ -398,9 +536,18 @@ public static class MessageHandler
                 throw new ArgumentOutOfRangeException();
         }
 
-        return await botClient.SendTextMessageAsync(message.From?.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
+
+        var messageOptions4 = new TelegramBotAbstract.MessageOptions
+
+        {
+            ChatId = message.From?.Id,
+            Text = replyLang,
+            ChatType = ChatType.Private,
+            Lang = message.From?.LanguageCode,
+
+            ReplyMarkupObject = markupObject
+        };
+        return await botClient.SendTextMessageAsync(messageOptions4);
     }
 
     private static async Task<MessageSentResult?> SelectCampus(TelegramBotAbstract botClient, Message message,
@@ -416,9 +563,18 @@ public static class MessageHandler
             markupObject = ReplyMarkupGenerator.CampusKeyboard(langCode!);
 
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html,
-                markupObject, null);
+
+            var messageOptions4 = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From?.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = message.From?.LanguageCode,
+
+                ReplyMarkupObject = markupObject
+            };
+            return await botClient.SendTextMessageAsync(messageOptions4);
         }
 
         conversation!.Campus = campus;
@@ -444,8 +600,21 @@ public static class MessageHandler
         replyLang = new L("it", "Sede selezionata", "en", "Campus selected");
 
         if (conversation.CallbackNextFunction is Data.Enums.Function.NULL_FUNCTION or Data.Enums.Function.SETTINGS)
-            return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-                ParseMode.Html, markupObject, null);
+        {
+            var messageOptions4 = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = message.From?.Id,
+                Text = replyLang,
+                ChatType = ChatType.Private,
+                Lang = message.From?.LanguageCode,
+
+                ReplyMarkupObject = markupObject
+            };
+            var sendTextMessageAsync = await botClient.SendTextMessageAsync(messageOptions4);
+            return sendTextMessageAsync;
+        }
+
         await MainMenu(botClient, message, "", conversation.CallbackNextFunction);
         return null;
     }
@@ -461,8 +630,18 @@ public static class MessageHandler
         var markupObject = ReplyMarkupGenerator.MainKeyboard(langCode!);
 
         conversation!.State = Data.Enums.ConversationState.MAIN;
-        return await botClient.SendTextMessageAsync(message.From.Id, replyLang, ChatType.Private, langCode,
-            ParseMode.Html,
-            markupObject, null);
+
+        var messageOptions4 = new TelegramBotAbstract.MessageOptions
+
+        {
+            ChatId = message.From?.Id,
+            Text = replyLang,
+            ChatType = ChatType.Private,
+            Lang = message.From?.LanguageCode,
+
+            ReplyMarkupObject = markupObject
+        };
+        var sendTextMessageAsync = await botClient.SendTextMessageAsync(messageOptions4);
+        return sendTextMessageAsync;
     }
 }

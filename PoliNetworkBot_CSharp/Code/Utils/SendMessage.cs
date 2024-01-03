@@ -32,10 +32,21 @@ internal static class SendMessage
         try
         {
             if (telegramBotClient != null)
-                r = await telegramBotClient.SendTextMessageAsync(userId,
-                    text, ChatType.Private, parseMode: parseMode,
-                    lang: lang, username: username,
-                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup));
+            {
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = userId,
+                    Text = text,
+                    ParseMode = parseMode,
+                    Lang = lang,
+                    Username = username,
+                    ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
+                    ChatType = ChatType.Private
+                };
+                r = await telegramBotClient.SendTextMessageAsync(messageOptions);
+            }
+
             if (r != null && r.IsSuccess()) return r;
         }
         catch
@@ -53,8 +64,22 @@ internal static class SendMessage
         });
 
         if (telegramBotClient != null)
-            return await telegramBotClient.SendTextMessageAsync(chatId, text3, chatType,
-                lang, parseMode, new ReplyMarkupObject(inlineKeyboardMarkup), username);
+        {
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = chatId,
+                Text = text3,
+                ParseMode = parseMode,
+                Lang = lang,
+                Username = username,
+                ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
+                ChatType = ChatType.Private
+            };
+            var sendTextMessageAsync = await telegramBotClient.SendTextMessageAsync(messageOptions);
+            return sendTextMessageAsync;
+        }
+
         return null;
     }
 
@@ -75,11 +100,21 @@ internal static class SendMessage
         try
         {
             if (telegramBotClient != null)
-                return await telegramBotClient.SendTextMessageAsync(userIdToSendTo, text,
-                    ChatType.Private, parseMode: parseMode,
-                    lang: langCode, username: usernameToSendTo,
-                    replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
-                    replyToMessageId: messageIdToReplyTo);
+            {
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
+                {
+                    ChatId = userIdToSendTo,
+                    Text = text,
+                    ParseMode = parseMode,
+                    Lang = langCode,
+                    Username = usernameToSendTo,
+                    ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
+                    ChatType = ChatType.Private,
+                    ReplyToMessageId = messageIdToReplyTo
+                };
+                return await telegramBotClient.SendTextMessageAsync(messageOptions);
+            }
         }
         catch (Exception e)
         {
@@ -104,16 +139,22 @@ internal static class SendMessage
 
         try
         {
-            r1 = await telegramBotClient.SendTextMessageAsync(chatId,
-                text,
-                chatType,
-                lang,
-                parseMode,
-                username: null,
-                replyMarkupObject: new ReplyMarkupObject(inlineKeyboardMarkup),
-                replyToMessageId: replyToMessageId,
-                disablePreviewLink: disablePreviewLink,
-                splitMessage: true);
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
+            {
+                ChatId = chatId,
+                Text = text,
+                ParseMode = parseMode,
+                Lang = lang,
+
+                ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
+                ChatType = chatType,
+                ReplyToMessageId = replyToMessageId,
+                DisablePreviewLink = disablePreviewLink,
+                SplitMessage = true
+            };
+
+            r1 = await telegramBotClient.SendTextMessageAsync(messageOptions);
         }
         catch (Exception? e1)
         {
@@ -128,13 +169,20 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
+        var messageOptions = new TelegramBotAbstract.MessageOptions
+
+        {
+            documentInput = file,
+            peer = peer,
+            ChatId = peer.GetUserId(),
+            Username = username,
+            Lang = lang,
+            ReplyToMessageId = replyToMessageId,
+            DisablePreviewLink = disablePreviewLink,
+            ParseMode = parseModeCaption
+        };
         return telegramBotAbstract != null &&
-               telegramBotAbstract.SendFileAsync(
-                   file, peer,
-                   username, lang,
-                   replyToMessageId, disablePreviewLink,
-                   parseModeCaption: parseModeCaption
-               );
+               telegramBotAbstract.SendFileAsync(messageOptions);
     }
 
     public static async Task<TLAbsUpdates?> SendMessageUserBot(TelegramClient? userbotClient,

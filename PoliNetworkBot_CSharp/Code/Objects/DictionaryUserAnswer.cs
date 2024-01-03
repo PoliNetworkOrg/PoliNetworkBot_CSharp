@@ -81,8 +81,20 @@ public class DictionaryUserAnswer
                     var languageReply = new Language(new Dictionary<string, string?>
                         { { "en", "You chose [" + result + "]" }, { "it", "Hai scelto [" + result + "]" } });
                     if (telegramBotAbstract != null)
-                        await telegramBotAbstract.SendTextMessageAsync(idUser, languageReply, ChatType.Private, lang,
-                            ParseMode.Html, replyMarkup, username);
+                    {
+                        var messageOptions =
+                            new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
+
+                            {
+                                ChatId = idUser,
+                                Text = languageReply,
+                                ChatType = ChatType.Private,
+                                Lang = lang,
+                                ReplyMarkupObject = replyMarkup,
+                                Username = username
+                            };
+                        await telegramBotAbstract.SendTextMessageAsync(messageOptions);
+                    }
                 }
 
                 answerTelegram.SetAnswerProcessed(true);
