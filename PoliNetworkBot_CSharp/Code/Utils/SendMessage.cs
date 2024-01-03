@@ -33,7 +33,8 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
                 {
                     ChatId = userId,
                     Text = text,
@@ -64,7 +65,8 @@ internal static class SendMessage
 
         if (telegramBotClient != null)
         {
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
             {
                 ChatId = chatId,
                 Text = text3,
@@ -99,7 +101,8 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
                 {
                     ChatId = userIdToSendTo,
                     Text = text,
@@ -136,7 +139,8 @@ internal static class SendMessage
 
         try
         {
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
             {
                 ChatId = chatId,
                 Text = text,
@@ -165,7 +169,8 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+        var messageOptions = new TelegramBotAbstract.MessageOptions
+
         {
             documentInput = file,
             peer = peer,

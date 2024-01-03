@@ -45,7 +45,6 @@ public class TelegramBotAbstract
     public DbConfigConnection? DbConfig;
 
     private TelegramBotAbstract(TelegramBotClient? botClient, TelegramClient? userBotClient, BotTypeApi? botTypeApi,
-
         string? website, string? contactString, long? id, string? githubToken)
 
     {
@@ -56,7 +55,7 @@ public class TelegramBotAbstract
         _contactString = contactString;
         _id = id;
 
-        this.GithubToken = githubToken;
+        GithubToken = githubToken;
     }
 
     public TelegramBotAbstract(TelegramBotClient? botClient, string? website, string? contactString,
@@ -69,7 +68,6 @@ public class TelegramBotAbstract
     }
 
     public TelegramBotAbstract(TelegramClient? userbotClient, string? website, string? contactString, long? id,
-
         BotTypeApi? botTypeApi, string? mode, string? githubToken) :
         this(null, userbotClient, botTypeApi, website, contactString, id, githubToken)
 
@@ -645,22 +643,6 @@ public class TelegramBotAbstract
         return _id;
     }
 
-    public class MessageOptions
-    {
-        public long? ChatId { get; set; }
-        public Language? Text { get; set; }
-        public ChatType? ChatType { get; set; }
-        public string? Lang { get; set; }
-        public ParseMode? ParseMode { get; set; }
-        public ReplyMarkupObject? ReplyMarkupObject { get; set; }
-        public string? Username { get; set; }
-        public long? ReplyToMessageId { get; set; }
-        public bool DisablePreviewLink { get; set; }
-        public bool SplitMessage { get; set; } = false;
-        public int? MessageThreadId { get; set; }
-        public TelegramFile? documentInput;
-        public PeerAbstract? peer;
-    }
 
     /// <summary>
     ///     Send text message
@@ -1229,7 +1211,7 @@ public class TelegramBotAbstract
                         if (inputOnlineFile == null) return true;
 
 
-                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null, thumbnail: null,
+                        _ = _botClient.SendDocumentAsync(userId, inputOnlineFile, null, null,
                             textToSend, messageOptions.ParseMode, replyMarkup: reply).Result;
 
                         return true;
@@ -1248,7 +1230,7 @@ public class TelegramBotAbstract
 
                         if (inputOnlineFile != null)
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                messageThreadId: messageOptions.MessageThreadId,
+                                messageOptions.MessageThreadId,
                                 parseMode: messageOptions.ParseMode).Result;
 
 
@@ -1260,14 +1242,14 @@ public class TelegramBotAbstract
                         if (_botClient == null) return true;
                         if (inputOnlineFile != null)
                             _ = _botClient.SendDocumentAsync(userId, inputOnlineFile,
-                                    messageThreadId: messageOptions.MessageThreadId,
+                                    messageOptions.MessageThreadId,
                                     parseMode: messageOptions.ParseMode)
                                 .Result;
 
                         if (textToSend != null)
                             _ = _botClient
                                 .SendTextMessageAsync(userId, textToSend,
-                                    messageThreadId: messageOptions.MessageThreadId, messageOptions.ParseMode,
+                                    messageOptions.MessageThreadId, messageOptions.ParseMode,
                                     replyMarkup: reply).Result;
 
 
@@ -1881,9 +1863,10 @@ public class TelegramBotAbstract
         {
             case BotTypeApi.REAL_BOT:
                 if (_botClient != null)
-                    await _botClient.ForwardMessageAsync(chatId: chatId, fromChatId: idChatMessageFrom,
-                        messageId: idChatMessageTo,
-                        messageThreadId: null,
+
+                    await _botClient.ForwardMessageAsync(chatId, idChatMessageFrom,
+                        idChatMessageTo,
+                        null,
                         disableNotification,
                         protectContent, cancellationToken);
                 break;
@@ -1896,5 +1879,22 @@ public class TelegramBotAbstract
             case BotTypeApi.DISGUISED_BOT:
                 break;
         }
+    }
+
+    public class MessageOptions
+    {
+        public TelegramFile? documentInput;
+        public PeerAbstract? peer;
+        public long? ChatId { get; set; }
+        public Language? Text { get; set; }
+        public ChatType? ChatType { get; set; }
+        public string? Lang { get; set; }
+        public ParseMode? ParseMode { get; set; }
+        public ReplyMarkupObject? ReplyMarkupObject { get; set; }
+        public string? Username { get; set; }
+        public long? ReplyToMessageId { get; set; }
+        public bool DisablePreviewLink { get; set; }
+        public bool SplitMessage { get; set; } = false;
+        public int? MessageThreadId { get; set; }
     }
 }

@@ -32,6 +32,7 @@ public static class Navigator
         {
             "Architettura"
         },
+
         ["ICAT"] = new[]
         {
             "Ambientale"

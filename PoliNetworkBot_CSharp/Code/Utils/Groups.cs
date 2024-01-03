@@ -74,8 +74,11 @@ internal static class Groups
         if (chatId == null)
             return null;
 
+
         if (GlobalVariables.Creators != null &&
             GlobalVariables.Creators.ToList().Any(x => x.Matches(userId.Value, username)))
+
+
             return new SuccessWithException(true);
 
         if (telegramBotAbstract != null)
@@ -85,8 +88,11 @@ internal static class Groups
                 return s1;
         }
 
+
         if (GlobalVariables.Owners != null &&
             GlobalVariables.Owners.ToList().Any(x => x.Matches(userId.Value, username)))
+
+
             return new SuccessWithException(true);
 
         return null;
@@ -540,6 +546,7 @@ internal static class Groups
     public static void HandleListaGruppo(DataTable groups, Action action)
     {
         Variabili.L = new ListaGruppo();
+
 
         lock (Variabili.L.GetGroups())
         {

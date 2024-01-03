@@ -51,7 +51,8 @@ internal static class RestrictUser
                 CanSendPhotos = false,
                 CanSendVideos = false,
                 CanSendVideoNotes = false,
-                CanSendVoiceNotes = false,
+
+                CanSendVoiceNotes = false
             },
             RestrictAction.UNMUTE => new ChatPermissions
             {
@@ -67,7 +68,8 @@ internal static class RestrictUser
                 CanSendPhotos = true,
                 CanSendVideos = true,
                 CanSendVideoNotes = true,
-                CanSendVoiceNotes = true,
+
+                CanSendVoiceNotes = true
             },
             _ => throw new ArgumentOutOfRangeException(nameof(restrictAction), restrictAction, null)
         };
@@ -583,7 +585,8 @@ internal static class RestrictUser
             });
             if (sender != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
                 {
                     ChatType = ChatType.Private,
                     ChatId = e?.Message.From?.Id,
@@ -608,7 +611,8 @@ internal static class RestrictUser
             if (e?.Message.From == null) return;
             if (sender != null)
             {
-                TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+                var messageOptions = new TelegramBotAbstract.MessageOptions
+
                 {
                     ChatId = e.Message.From.Id,
                     Text = lang2,

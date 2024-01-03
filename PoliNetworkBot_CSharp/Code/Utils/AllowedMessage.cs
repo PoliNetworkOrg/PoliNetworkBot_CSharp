@@ -25,7 +25,9 @@ public static class AllowedMessage
         {
             var message1 = e.Message;
 
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
             {
                 ChatType = ChatType.Private,
                 ChatId = e.Message.From?.Id,
@@ -49,13 +51,16 @@ public static class AllowedMessage
             {
                 { "uni", m2 }
             });
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
             {
                 ChatType = ChatType.Private,
                 ChatId = e?.Message?.From?.Id,
                 Text = text,
                 Lang = "uni",
-                Username = e?.Message?.From?.Username,
+
+                Username = e?.Message?.From?.Username
             };
             await sender.SendTextMessageAsync(messageOptions);
         }
@@ -83,7 +88,9 @@ public static class AllowedMessage
                 return CommandExecutionState.UNMET_CONDITIONS;
             var o = e.Message;
 
-            TelegramBotAbstract.MessageOptions messageOptions = new TelegramBotAbstract.MessageOptions()
+
+            var messageOptions = new TelegramBotAbstract.MessageOptions
+
             {
                 ChatType = ChatType.Private,
                 ChatId = e.Message.From?.Id,
