@@ -830,7 +830,9 @@ public static class Assoc
                 var messageOptions = new TelegramBotAbstract.MessageOptions
 
                 {
+
                     ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
+
                     Text = language,
                     Lang = "en",
 

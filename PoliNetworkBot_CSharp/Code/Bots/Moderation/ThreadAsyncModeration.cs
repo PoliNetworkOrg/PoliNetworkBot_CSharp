@@ -188,7 +188,9 @@ public static class ThreadAsyncModeration
             var messageOptions = new TelegramBotAbstract.MessageOptions
 
             {
+
                 ChatId = GroupsConstants.BackupGroup.FullLong(),
+
                 Text = text,
                 ChatType = ChatType.Supergroup
             };

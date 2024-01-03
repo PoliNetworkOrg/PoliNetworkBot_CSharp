@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
@@ -12,7 +14,7 @@ using Telegram.Bot.Types.Enums;
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
-{
+
     private static readonly List<ChatIdTgWith100>
         AllowedGroups = new()
         {
@@ -21,14 +23,17 @@ public static class Handle
             GroupsConstants.Dsu
         };
 
+
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
 
 
+
         var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
         if (!found || chatIdTgWith100 == null)
+
             return;
 
         try
@@ -45,7 +50,9 @@ public static class Handle
             var date = GetItalianDateTime(e);
 
 
+
             var chatId = chatIdTgWith100?.Id;
+
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
 
@@ -65,7 +72,9 @@ public static class Handle
 
             const int maxLengthTitle = 25;
             var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
+
             CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
+
         }
         catch (Exception ex)
         {
@@ -86,5 +95,6 @@ public static class Handle
         var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
 
         return b == null ? new Tuple<bool, ChatIdTgWith100?>(false, null) : new Tuple<bool, ChatIdTgWith100?>(true, b);
+
     }
 }

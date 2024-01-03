@@ -116,6 +116,7 @@ internal static class BackupUtil
         {
             var jObject = new JObject
             {
+
                 ["tableName"] = tableName
             };
             var eventArgsContainer = new EventArgsContainer { Extra = jObject };
@@ -133,6 +134,7 @@ internal static class BackupUtil
             var stringOrStream = new StringOrStream { StringValue = serializedText };
             LoggerSendFile.SendFiles(sendTo, stringOrStream, botAbstract,
                 textToSendBefore, applicationJson, dbFullDataJson);
+
         }
         catch (Exception? ex)
         {
