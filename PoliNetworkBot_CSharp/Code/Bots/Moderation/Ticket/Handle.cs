@@ -47,7 +47,7 @@ public static class Handle
             var date = GetItalianDateTime(e);
 
 
-            var chatId = chatIdTgWith100?.Id;
+            var chatId = chatIdTgWith100.Id;
 
             var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
             body += "\n\n\n";
@@ -66,7 +66,7 @@ public static class Handle
             body += messageText;
 
 
-            const int maxLengthTitle = 25;
+            const int maxLengthTitle = 200;
             var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
 
             CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
