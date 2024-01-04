@@ -10,8 +10,8 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -478,6 +478,10 @@ internal static class ModerationCheck
         var r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
             usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
 
+        var botid = telegramBotClient?.GetId();
+        if (botid == null)
+            return;
+
         const int minutesWait = 2;
 
         if (r1?.GetChatType() == ChatType.Private) return;
@@ -485,47 +489,39 @@ internal static class ModerationCheck
         var r2 = r1?.GetMessage();
         if (r2 == null) return;
 
+        var botIdValue = botid.Value;
+        var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
+        var timeToDelete = DateTime.Now + timeUntilDelete;
+
+        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
+
         switch (r2)
         {
             case TLMessage r3:
             {
-                if (GlobalVariables.MessagesToDelete != null)
-                    lock (GlobalVariables.MessagesToDelete)
-                    {
-                        var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
-                        var timeToDelete = DateTime.Now + timeUntilDelete;
-                        var botid = telegramBotClient?.GetId();
-                        if (botid != null)
-                        {
-                            var toDelete = new MessageToDelete(r3, chatId, timeToDelete, botid.Value,
-                                r1?.GetChatType(), null);
-                            GlobalVariables.MessagesToDelete.Add(toDelete);
+                lock (GlobalVariables.MessagesToDelete)
+                {
+                    var toDelete = new MessageToDelete(r3, chatId, timeToDelete, botIdValue,
+                        r1?.GetChatType(), null);
+                    GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                GlobalVariables.MessagesToDelete);
-                        }
-                    }
+                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                        GlobalVariables.MessagesToDelete);
+                }
 
                 break;
             }
             case Message r4:
             {
-                if (GlobalVariables.MessagesToDelete != null)
-                    lock (GlobalVariables.MessagesToDelete)
-                    {
-                        var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
-                        var timeToDelete = DateTime.Now + timeUntilDelete;
-                        var botId = telegramBotClient?.GetId();
-                        if (botId != null)
-                        {
-                            var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
-                                r1?.GetChatType(), null);
-                            GlobalVariables.MessagesToDelete.Add(toDelete);
+                lock (GlobalVariables.MessagesToDelete)
+                {
+                    var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botIdValue,
+                        r1?.GetChatType(), null);
+                    GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                GlobalVariables.MessagesToDelete);
-                        }
-                    }
+                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                        GlobalVariables.MessagesToDelete);
+                }
 
                 break;
             }
@@ -535,7 +531,7 @@ internal static class ModerationCheck
                 var e3 = new Exception(e4);
                 await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient,
                     EventArgsContainer.Get(messageEventArgs));
-                break;
+                return;
             }
         }
     }

@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
@@ -54,10 +56,11 @@ public class MessageToDelete
 
     internal async Task<bool> Delete(MessageEventArgs? e2)
     {
-        if (GlobalVariables.Bots != null && GlobalVariables.Bots.ContainsKey(_botId) == false)
+        GlobalVariables.Bots ??= new Dictionary<long, TelegramBotAbstract?>();
+        if (GlobalVariables.Bots.ContainsKey(_botId) == false)
             return false;
 
-        var bot = GlobalVariables.Bots?[_botId];
+        var bot = GlobalVariables.Bots[_botId];
         if (bot == null)
             return false;
 
@@ -67,7 +70,8 @@ public class MessageToDelete
         }
         catch (Exception? e)
         {
-            await NotifyUtil.NotifyOwnerWithLog2(e, bot, EventArgsContainer.Get(e2));
+            var eventArgsContainer = EventArgsContainer.Get(e2);
+            await NotifyUtil.NotifyOwnerWithLog2(e, bot, eventArgsContainer);
         }
 
         return false;

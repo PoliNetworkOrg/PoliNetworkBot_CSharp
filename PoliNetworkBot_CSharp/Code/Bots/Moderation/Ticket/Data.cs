@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using Octokit;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;

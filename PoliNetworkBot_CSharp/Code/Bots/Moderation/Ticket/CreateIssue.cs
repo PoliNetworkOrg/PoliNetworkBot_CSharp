@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Octokit;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 

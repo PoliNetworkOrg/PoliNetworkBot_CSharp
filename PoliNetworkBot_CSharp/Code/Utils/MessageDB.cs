@@ -8,8 +8,8 @@ using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -637,25 +637,37 @@ public static class MessageDb
 
     internal static async Task CheckMessageToDelete(MessageEventArgs? messageEventArgs)
     {
-        if (GlobalVariables.MessagesToDelete == null) return;
+        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
 
         for (var i = 0; i < GlobalVariables.MessagesToDelete.Count;)
         {
             var m = GlobalVariables.MessagesToDelete[i];
             if (m.ToDelete())
             {
-                var success = await m.Delete(messageEventArgs);
-                if (success)
-                    lock (GlobalVariables.MessagesToDelete)
-                    {
-                        GlobalVariables.MessagesToDelete.RemoveAt(i);
-                        FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                            GlobalVariables.MessagesToDelete);
-                        continue;
-                    }
+                await DeleteSingleMessage(messageEventArgs, m, i);
             }
+            else
+            {
+                i++;
+            }
+        }
+    }
 
-            i++;
+    private static async Task DeleteSingleMessage(MessageEventArgs? messageEventArgs, MessageToDelete m, int i)
+    {
+        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
+
+        var success = await m.Delete(messageEventArgs);
+        if (!success)
+        {
+            return;
+        }
+
+        lock (GlobalVariables.MessagesToDelete)
+        {
+            GlobalVariables.MessagesToDelete.RemoveAt(i);
+            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                GlobalVariables.MessagesToDelete);
         }
     }
 }

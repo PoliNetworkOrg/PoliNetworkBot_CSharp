@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 
-namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
 public class TelegramBotParam
 {
@@ -14,7 +14,7 @@ public class TelegramBotParam
         _test = test;
     }
 
-    public TelegramBotAbstract? GetTelegramBot()
+    public AbstractBot.TelegramBotAbstract? GetTelegramBot()
     {
         TelegramBotClient? telegramBotClientBot = null;
         if (_sender is TelegramBotClient tmp) telegramBotClientBot = tmp;
@@ -25,10 +25,10 @@ public class TelegramBotParam
                 return null;
 
             var botClient = new TelegramBotClient("");
-            return new TelegramBotAbstract(botClient, null);
+            return new AbstractBot.TelegramBotAbstract(botClient, null);
         }
 
-        var telegramBotClient = TelegramBotAbstract.GetFromRam(telegramBotClientBot);
+        var telegramBotClient = AbstractBot.TelegramBotAbstract.GetFromRam(telegramBotClientBot);
         return telegramBotClient;
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -234,7 +234,7 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
+    internal static async Task SendMessageDetailsAsync(AbstractBot.TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
         if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
@@ -385,7 +385,7 @@ public static class MessagesStore
     }
 
     public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e,
-        TelegramBotAbstract.TelegramBotAbstract? sender)
+        AbstractBot.TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;

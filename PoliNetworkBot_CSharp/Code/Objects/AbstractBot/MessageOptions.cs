@@ -1,7 +1,7 @@
 ﻿using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
-namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
 public class MessageOptions
 {
