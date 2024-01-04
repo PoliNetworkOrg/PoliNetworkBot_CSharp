@@ -105,7 +105,7 @@ public static class Handle
                         childMessage.ChatId == chatId)
                     {
                         variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
-                        return childMessage;
+                        return startMessage;
                     }
             }
         }
