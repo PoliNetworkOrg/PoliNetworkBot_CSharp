@@ -21,7 +21,7 @@ public static class Handle
 
     private static readonly List<MessageThread> Threads = new();
 
-    public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
+    public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
         HandleRemoveOutdatedThreadsFromRam();
 
@@ -56,6 +56,7 @@ public static class Handle
 
         Console.WriteLine("todo: add comment to issue " + messageThread.IssueNumber);
         //todo: add comment to issue
+        // https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
     }
 
     private static MessageThread? FindOrigin(Message messageReplyToMessage)
