@@ -41,7 +41,7 @@ public static class MessagesStore
                 File.ReadAllText(Paths.Data.MessageStore));
             Store = x ?? new Dictionary<string, StoredMessage?>();
         }
-        catch (Exception? ex)
+        catch
         {
             File.Create(Paths.Data.MessageStore);
             Store = new Dictionary<string, StoredMessage?>();
