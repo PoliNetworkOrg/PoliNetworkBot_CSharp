@@ -25,9 +25,9 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Main;
 
-public static class Main
+public static class MainClass
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
