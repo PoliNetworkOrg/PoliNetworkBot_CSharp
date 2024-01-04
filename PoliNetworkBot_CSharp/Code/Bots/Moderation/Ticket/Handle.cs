@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -19,13 +16,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private const int MaxLengthTitleIssue = 200;
-    private const int MaxTimeThreadInRamDays = 3;
-
-
     public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
-        HandleRemoveOutdatedThreadsFromRam(t);
+        Outdated.HandleRemoveOutdatedThreadsFromRam(t);
 
 
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
@@ -114,7 +107,7 @@ public static class Handle
                             { MessageId = newMessage.MessageId, ChatId = chatId, GithubInfo = githubInfo });
 
                         UpdateKeyTime(key, startMessage);
-                        WriteThreadsToFile();
+                        Write.WriteThreadsToFile();
 
                         return startMessage;
                     }
@@ -129,7 +122,7 @@ public static class Handle
                                     { MessageId = newMessage.MessageId, ChatId = chatId, GithubInfo = githubInfo });
 
                             UpdateKeyTime(key, startMessage);
-                            WriteThreadsToFile();
+                            Write.WriteThreadsToFile();
 
                             return startMessage;
                         }
@@ -159,64 +152,6 @@ public static class Handle
         }
     }
 
-    private static void HandleRemoveOutdatedThreadsFromRam(TelegramBotAbstract telegramBotAbstract)
-    {
-        GlobalVariables.Threads ??= new MessageThreadStore();
-        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
-
-
-        var deletedList = new List<List<MessageThread>>();
-        lock (GlobalVariables.Threads)
-        {
-            var dateTimes = GlobalVariables.Threads.Dict.Keys
-                .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
-                .ToList();
-
-
-            foreach (var variable in dateTimes)
-            {
-                var messageThreads = GlobalVariables.Threads.Dict[variable];
-                GlobalVariables.Threads.Dict.Remove(variable);
-
-                deletedList.Add(messageThreads);
-            }
-
-            if (deletedList.Count > 0) WriteThreadsToFile();
-        }
-
-        foreach (var v1 in deletedList)
-        foreach (var v2 in v1)
-            CommentAndClose(v2, telegramBotAbstract);
-    }
-
-    private static void CommentAndClose(MessageThread v2, TelegramBotAbstract telegramBotAbstract)
-    {
-        try
-        {
-            if (v2.IssueNumber == null)
-                return;
-
-            var g = DataTicketClass.GetGitHubClient(telegramBotAbstract);
-            var owner = v2.GithubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
-            var repo = v2.GithubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
-            var issueNumber = v2.IssueNumber.Value;
-            var i = g.Issue.Get(owner, repo, issueNumber).Result;
-
-            if (i.State != ItemState.Open) return;
-
-
-            Comments.CreateComment(telegramBotAbstract, issueNumber, "Closed issue for inactivity.",
-                v2.GithubInfo);
-            var issueUpdate = new IssueUpdate { State = ItemState.Closed, StateReason = ItemStateReason.Completed };
-            g.Issue.Update(owner, repo, issueNumber, issueUpdate);
-        }
-        catch (Exception ex)
-        {
-            NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotAbstract, null);
-        }
-    }
-
-
     private static void HandleCreateIssue(TelegramBotAbstract t, MessageEventArgs e, ChatIdTgWith100 chatIdTgWith100)
     {
         var messageText = e.Message.Text;
@@ -232,8 +167,8 @@ public static class Handle
             var body = BodyClass.GetBody(e, chatId, date, messageText);
 
 
-            var titleIssue = messageText.Length > MaxLengthTitleIssue
-                ? messageText[..MaxLengthTitleIssue]
+            var titleIssue = messageText.Length > DataTicketClass.MaxLengthTitleIssue
+                ? messageText[..DataTicketClass.MaxLengthTitleIssue]
                 : messageText;
 
             var issue = CreateIssue.Create(titleIssue, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
@@ -258,27 +193,12 @@ public static class Handle
 
                 GlobalVariables.Threads.Dict[dateTime].Add(messageThread);
 
-                WriteThreadsToFile();
+                Write.WriteThreadsToFile();
             }
         }
         catch (Exception ex)
         {
             NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer { MessageEventArgs = e });
-        }
-    }
-
-    private static void WriteThreadsToFile()
-    {
-        try
-        {
-            FileSerialization.WriteToBinaryFile(
-                Paths.Bin.MessagesThread,
-                GlobalVariables.Threads
-            );
-        }
-        catch
-        {
-            // ignored
         }
     }
 

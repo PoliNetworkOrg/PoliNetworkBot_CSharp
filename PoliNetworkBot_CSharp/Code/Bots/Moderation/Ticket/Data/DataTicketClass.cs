@@ -14,6 +14,8 @@ public static class DataTicketClass
     private const string NameUserAgent = "PoliNetwork-Ticket";
     public const string OwnerRepo = "PoliNetworkOrg";
     public const string NameRepo = "testIssue";
+    public const int MaxLengthTitleIssue = 200;
+    public const int MaxTimeThreadInRamDays = 3;
 
     public static readonly List<ChatIdTgWith100>
         AllowedGroups = new()
