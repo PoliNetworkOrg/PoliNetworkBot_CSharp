@@ -55,11 +55,18 @@ public static class Outdated
     }
 
     private static void CommentAndCloseDeletedList(TelegramBotAbstract telegramBotAbstract,
-        List<List<MessageThread>> deletedList)
+        IEnumerable<List<MessageThread>> deletedList)
     {
-        var messageThreadsDeleted = deletedList.SelectMany(v1 => v1);
-        foreach (var v2 in messageThreadsDeleted)
-            CommentAndCloseOutdated(v2, telegramBotAbstract);
+        try
+        {
+            var messageThreadsDeleted = deletedList.SelectMany(v1 => v1);
+            foreach (var v2 in messageThreadsDeleted)
+                CommentAndCloseOutdated(v2, telegramBotAbstract);
+        }
+        catch (Exception ex)
+        {
+            NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotAbstract, null);
+        }
     }
 
 
