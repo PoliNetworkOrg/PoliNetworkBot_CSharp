@@ -21,7 +21,7 @@ public static class BodyClass
         body += "\n\n\n";
         body += "From user id: " + e.Message.From?.Id;
         body += "\n\n\n";
-        body += "Body:\n\n";
+        body += "## Body:\n\n";
         body += messageText;
         return body;
     }
