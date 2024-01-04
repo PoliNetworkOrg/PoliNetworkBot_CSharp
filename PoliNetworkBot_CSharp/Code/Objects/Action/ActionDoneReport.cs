@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
-
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
 public class ActionDoneReport

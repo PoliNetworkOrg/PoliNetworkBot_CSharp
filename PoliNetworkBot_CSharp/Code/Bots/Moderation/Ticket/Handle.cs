@@ -148,10 +148,7 @@ public static class Handle
                 deleted = true;
             }
 
-            if (deleted)
-            {
-                WriteThreadsToFile();
-            }
+            if (deleted) WriteThreadsToFile();
         }
     }
 
