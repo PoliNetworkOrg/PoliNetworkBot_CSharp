@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
@@ -21,7 +22,8 @@ public static class Comments
         return jArray;
     }
 
-    public static void CreateComment(TelegramBotAbstract telegramBotAbstract, int issueNumber, string body)
+    public static void CreateComment(TelegramBotAbstract telegramBotAbstract, int issueNumber, string body,
+        GithubInfo? githubInfo)
     {
         //https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
         var client = DataTicketClass.GetHttpClient(telegramBotAbstract);

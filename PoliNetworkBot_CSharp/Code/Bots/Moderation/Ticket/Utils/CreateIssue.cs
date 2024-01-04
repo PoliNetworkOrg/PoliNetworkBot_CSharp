@@ -13,32 +13,37 @@ public static class CreateIssue
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {
+        var githubInfo = chatIdTgWith100?.GithubInfo;
         var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
         var newIssue = new NewIssue(title)
         {
             Body = body
         };
-        CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue, telegramBotAbstract);
-        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue, telegramBotAbstract);
+        CreateAndAddLabel(GetLabelIdTelegramName(telegramChatId, "id"), newIssue, telegramBotAbstract, githubInfo);
+        CreateAndAddLabel(GetLabelIdTelegramName(fromId, "u"), newIssue, telegramBotAbstract, githubInfo);
 
-        CreateAndAddLabel(chatIdTgWith100?.Category, newIssue, telegramBotAbstract);
 
-        var task = githubClient.Issue.Create(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo, newIssue);
+        CreateAndAddLabel(githubInfo?.CategoryGithub, newIssue, telegramBotAbstract, githubInfo);
+
+        var owner = githubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
+        var repo = githubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
+        var task = githubClient.Issue.Create(owner, repo, newIssue);
         task.Wait();
         return task.Result;
     }
 
     private static void CreateAndAddLabel(string? labelIdTelegramName, NewIssue newIssue,
-        TelegramBotAbstract telegramBotAbstract)
+        TelegramBotAbstract telegramBotAbstract, GithubInfo? githubInfo)
     {
         if (string.IsNullOrEmpty(labelIdTelegramName))
             return;
 
-        CreateLabel(labelIdTelegramName, telegramBotAbstract);
+        CreateLabel(labelIdTelegramName, telegramBotAbstract, githubInfo);
         newIssue.Labels.Add(labelIdTelegramName);
     }
 
-    private static void CreateLabel(string? labelIdTelegramName, TelegramBotAbstract telegramBotAbstract)
+    private static void CreateLabel(string? labelIdTelegramName, TelegramBotAbstract telegramBotAbstract,
+        GithubInfo? githubInfo)
     {
         if (string.IsNullOrEmpty(labelIdTelegramName))
             return;
@@ -48,7 +53,11 @@ public static class CreateIssue
             var generateHexColor = GenerateHexColor(labelIdTelegramName);
             var label = new NewLabel(labelIdTelegramName, generateHexColor);
             var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
-            githubClient.Issue.Labels.Create(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo, label).Wait();
+            var owner = githubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
+            var repo = githubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
+
+            var labelCreated = githubClient.Issue.Labels
+                .Create(owner, repo, label).Result;
         }
         catch
         {

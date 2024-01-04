@@ -35,7 +35,7 @@ public static class Handle
         var messageReplyToMessage = e.Message.ReplyToMessage;
         if (messageReplyToMessage != null)
         {
-            HandleReply(messageReplyToMessage, t, e);
+            HandleReply(messageReplyToMessage, t, e, chatIdTgWith100.GithubInfo);
             return;
         }
 
@@ -43,18 +43,18 @@ public static class Handle
     }
 
     private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
-        MessageEventArgs messageEventArgs)
+        MessageEventArgs messageEventArgs, GithubInfo? githubInfo)
     {
         var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message);
 
         if (messageThread == null) return;
 
 
-        HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread);
+        HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread, githubInfo: githubInfo);
     }
 
     private static void HandleWriteComment(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
-        MessageThread messageThread)
+        MessageThread messageThread, GithubInfo? githubInfo)
     {
         var messageThreadIssueNumber = messageThread.IssueNumber;
         var messageThreadChatId = messageThread.ChatId;
@@ -75,7 +75,8 @@ public static class Handle
         Comments.CreateComment(
             telegramBotAbstract,
             threadIssueNumber,
-            body
+            body,
+            githubInfo: githubInfo
         );
     }
 
