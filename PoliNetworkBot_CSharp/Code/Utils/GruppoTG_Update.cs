@@ -1,6 +1,6 @@
 ﻿#region
 
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Enums;
 
 #endregion

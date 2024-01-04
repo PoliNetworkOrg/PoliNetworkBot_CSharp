@@ -1,81 +1,219 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private static readonly List<ChatIdTgWith100>
-        AllowedGroups = new()
-        {
-            GroupsConstants.TestGroup,
-            GroupsConstants.PianoDiStudi,
-            GroupsConstants.Dsu
-        };
+    private const int MaxLengthTitleIssue = 200;
+    private const int MaxTimeThreadInRamDays = 3;
 
 
-    public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
+    public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
+        HandleRemoveOutdatedThreadsFromRam();
+
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
 
 
-        var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
-        if (!found || chatIdTgWith100 == null)
+        var chatIdTgWith100 = AllowedGroupsContains(e.Message.Chat.Id);
+        if (chatIdTgWith100 == null)
+            return;
 
+
+        var messageReplyToMessage = e.Message.ReplyToMessage;
+        if (messageReplyToMessage != null)
+        {
+            HandleReply(messageReplyToMessage, t, e, chatIdTgWith100.GithubInfo);
+            return;
+        }
+
+        HandleCreateIssue(t, e, chatIdTgWith100);
+    }
+
+    private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
+        MessageEventArgs messageEventArgs, GithubInfo? githubInfo)
+    {
+        var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message);
+
+        if (messageThread == null) return;
+
+
+        HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread, githubInfo);
+    }
+
+    private static void HandleWriteComment(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
+        MessageThread messageThread, GithubInfo? githubInfo)
+    {
+        var messageThreadIssueNumber = messageThread.IssueNumber;
+        var messageThreadChatId = messageThread.ChatId;
+        if (messageThreadIssueNumber == null) return;
+        if (messageThreadChatId == null) return;
+
+        var threadChatId = messageThreadChatId.Value;
+        var messageText = messageEventArgs.Message.Text;
+        var body = BodyClass.GetBody(
+            messageEventArgs,
+            threadChatId,
+            DateTime.Now,
+            messageText
+        );
+
+        var threadIssueNumber = messageThreadIssueNumber.Value;
+
+        Comments.CreateComment(
+            telegramBotAbstract,
+            threadIssueNumber,
+            body,
+            githubInfo
+        );
+    }
+
+    private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
+    {
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+        lock (GlobalVariables.Threads)
+        {
+            foreach (var key in GlobalVariables.Threads.Dict.Keys)
+            {
+                var startMessage2 = GlobalVariables.Threads.Dict[key];
+                foreach (var startMessage in startMessage2)
+                {
+                    startMessage.Children ??= new List<MessageThread>();
+
+                    var messageId = messageReplyToMessage.MessageId;
+                    var chatId = messageReplyToMessage.Chat.Id;
+
+                    var variableChildren = startMessage.Children;
+
+                    if (startMessage.MessageId == messageId &&
+                        startMessage.ChatId == chatId)
+                    {
+                        variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                        WriteThreadsToFile();
+
+                        return startMessage;
+                    }
+
+
+                    foreach (var childMessage in variableChildren)
+                        if (childMessage.MessageId == messageId &&
+                            childMessage.ChatId == chatId)
+                        {
+                            variableChildren.Add(
+                                new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                            WriteThreadsToFile();
+
+                            return startMessage;
+                        }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static void HandleRemoveOutdatedThreadsFromRam()
+    {
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+
+        var deleted = false;
+        lock (GlobalVariables.Threads)
+        {
+            var dateTimes = GlobalVariables.Threads.Dict.Keys
+                .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
+                .ToList();
+
+            foreach (var variable in dateTimes)
+            {
+                GlobalVariables.Threads.Dict.Remove(variable);
+                deleted = true;
+            }
+
+            if (deleted) WriteThreadsToFile();
+        }
+    }
+
+    private static void HandleCreateIssue(TelegramBotAbstract t, MessageEventArgs e, ChatIdTgWith100 chatIdTgWith100)
+    {
+        var messageText = e.Message.Text;
+        if (string.IsNullOrEmpty(messageText))
             return;
 
         try
         {
-            var messageReplyToMessage = e.Message.ReplyToMessage;
-            if (messageReplyToMessage != null)
-
-                return;
-
-            var messageText = e.Message.Text;
-            if (string.IsNullOrEmpty(messageText))
-                return;
-
             var date = GetItalianDateTime(e);
-
 
             var chatId = chatIdTgWith100.Id;
 
-            var body = "Link to first message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
-            body += "\n\n\n";
+            var body = BodyClass.GetBody(e, chatId, date, messageText);
 
-            body += "When: " + date.ToString(CultureInfo.InvariantCulture);
-            body += "\n\n\n";
-            body += "Chat title: " + e.Message.Chat.Title;
-            body += "\n\n\n";
-            body += "Chat type: " + e.Message.Chat.Type;
-            body += "\n\n\n";
-            body += "Message type: " + e.Message.Type;
-            body += "\n\n\n";
-            body += "From user id: " + e.Message.From?.Id;
-            body += "\n\n\n";
-            body += "Body:\n\n";
-            body += messageText;
+            var titleIssue = messageText.Length > MaxLengthTitleIssue
+                ? messageText[..MaxLengthTitleIssue]
+                : messageText;
 
+            var issue = CreateIssue.Create(titleIssue, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
 
-            const int maxLengthTitle = 200;
-            var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
+            var messageThread = new MessageThread
+            {
+                MessageId = e.Message.MessageId,
+                ChatId = e.Message.Chat.Id,
+                IssueNumber = issue.Number
+            };
 
-            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
+            GlobalVariables.Threads ??= new MessageThreadStore();
+            GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+
+            lock (GlobalVariables.Threads)
+            {
+                var dateTime = DateTime.Now;
+                if (!GlobalVariables.Threads.Dict.ContainsKey(dateTime))
+                    GlobalVariables.Threads.Dict[dateTime] = new List<MessageThread>();
+
+                GlobalVariables.Threads.Dict[dateTime].Add(messageThread);
+
+                WriteThreadsToFile();
+            }
         }
         catch (Exception ex)
         {
             NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer { MessageEventArgs = e });
         }
     }
+
+    private static void WriteThreadsToFile()
+    {
+        try
+        {
+            FileSerialization.WriteToBinaryFile(
+                Paths.Bin.MessagesThread,
+                GlobalVariables.Threads
+            );
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
 
     private static DateTime GetItalianDateTime(MessageEventArgs e)
     {
@@ -85,10 +223,13 @@ public static class Handle
         return date;
     }
 
-    private static Tuple<bool, ChatIdTgWith100?> AllowedGroupsContains(long chatId)
+    private static ChatIdTgWith100? AllowedGroupsContains(long chatId)
     {
-        var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
+        return DataTicketClass.AllowedGroups.FirstOrDefault(a => ChatIdTgWith100Equales(a, chatId));
+    }
 
-        return b == null ? new Tuple<bool, ChatIdTgWith100?>(false, null) : new Tuple<bool, ChatIdTgWith100?>(true, b);
+    private static bool ChatIdTgWith100Equales(ChatIdTgWith100 a, long b)
+    {
+        return a.GetString() == b.ToString();
     }
 }

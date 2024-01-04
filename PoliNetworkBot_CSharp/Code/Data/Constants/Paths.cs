@@ -32,6 +32,7 @@ public static class Paths
     public static class Bin
     {
         public const string MessagesToDelete = "../config/messagestodelete.bin";
+        public const string MessagesThread = "../config/messagesthreads.bin";
     }
 
     public static class Ig

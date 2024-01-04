@@ -6,8 +6,9 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 
+[Serializable]
 public class GruppoTg
 {
     private readonly DateTime? _lastUpdateInviteLinkTimeDateTime;

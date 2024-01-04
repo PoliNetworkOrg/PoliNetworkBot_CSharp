@@ -1,8 +1,12 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
+﻿using System;
+using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class MessageOptions
 {
     public TelegramFile? DocumentInput;

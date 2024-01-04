@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
@@ -24,16 +25,15 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Main;
 
-public static class Main
+public static class MainClass
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {
         if (sender == null || e == null) return;
         var telegramBotParam = new TelegramBotParam(sender, false);
-        var x = MainMethod2(telegramBotParam, e);
-        x.Wait();
+        var x = MainMethod2(telegramBotParam, e).Result;
     }
 
     public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)
@@ -125,7 +125,8 @@ public static class Main
                 }
 
 
-            Handle.HandleMethod(telegramBotClient, e);
+            Handle.HandleTicketMethod(telegramBotClient, e);
+
             var y = await TextConversation.DetectMessage(telegramBotClient, e);
             return new ActionDoneObject(y.ActionDoneEnum, y.Done, result.Item1);
         }

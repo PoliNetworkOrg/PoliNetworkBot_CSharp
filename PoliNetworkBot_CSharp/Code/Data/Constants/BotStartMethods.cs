@@ -3,7 +3,8 @@
 using System;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Bots.Materials;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Main;
+using PoliNetworkBot_CSharp.Code.Bots.Primo;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
@@ -25,9 +26,9 @@ public static class BotStartMethods
     {
         Action<object?, MessageEventArgs?>? x = null;
         if (s == Moderation.Item1)
-            x = Main.MainMethod;
+            x = MainClass.MainMethod;
         else if (s == Primo.Item1)
-            x = Bots.Primo.Main.MainMethod;
+            x = MainPrimoClass.MainMethod;
         else if (s == Anon.Item1)
             x = MainAnon.MainMethod;
         else if (s == Material.Item1)

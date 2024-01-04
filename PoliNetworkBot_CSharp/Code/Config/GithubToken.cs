@@ -1,4 +1,5 @@
-﻿using PoliNetworkBot_CSharp.Code.Objects;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.InfoBot;
 using PoliNetworkBot_CSharp.Code.Utils;
@@ -27,7 +28,16 @@ public static class GithubToken
         arg2.BotInfoAbstract ??= new BotInfoAbstract();
         arg2.BotInfoAbstract.GithubToken = githubToken;
 
+        DataTicketClass.SetToken(githubToken);
 
-        return CommandExecutionState.SUCCESSFUL;
+        var messageOptions = new MessageOptions
+        {
+            ChatId = arg1?.Message.From?.Id,
+            Text = new L("Github token settato con successo.")
+        };
+        var x = arg2.SendTextMessageAsync(messageOptions).Result;
+
+        var isSuccess = x?.IsSuccess() ?? false;
+        return isSuccess ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 }

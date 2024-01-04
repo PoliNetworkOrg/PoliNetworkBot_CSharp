@@ -1,9 +1,12 @@
 ﻿using System;
+using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.Action;
 
+[Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class ActionDoneObject
 {
     private readonly SpamType? _spamType;

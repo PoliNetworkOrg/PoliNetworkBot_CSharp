@@ -1,4 +1,4 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 
 namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 
@@ -20,17 +20,17 @@ public static class GroupsConstants
         { Id = 1419772154, VaAggiuntoMeno100 = true };
 
     public static readonly ChatIdTgWith100 PianoDiStudi = new()
-        { Id = 1208900229, VaAggiuntoMeno100 = true, Category = "Piano Studi" };
+        { Id = 1208900229, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Piano Studi" } };
 
     public static readonly ChatIdTgWith100 AskPolimi = new()
         { Id = 1251460298, VaAggiuntoMeno100 = true };
 
     public static readonly ChatIdTgWith100 Dsu = new()
-        { Id = 1241129618, VaAggiuntoMeno100 = true, Category = "Dsu" };
+        { Id = 1241129618, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Dsu" } };
 
     public static ChatIdTgWith100 Testing = new()
-        { Id = 1436937011, VaAggiuntoMeno100 = true };
+        { Id = 1436937011, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Test" } };
 
-    public static ChatIdTgWith100 TestGroup = new()
-        { Id = 2124790858, VaAggiuntoMeno100 = true };
+    public static readonly ChatIdTgWith100 TestGroup = new()
+        { Id = 2124790858, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Test" } };
 }
