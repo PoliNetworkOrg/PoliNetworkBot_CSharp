@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+<<<<<<< HEAD
 using Octokit;
+=======
+>>>>>>> master
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
@@ -25,7 +28,11 @@ public static class Handle
 
     public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
+<<<<<<< HEAD
         HandleRemoveOutdatedThreadsFromRam(t);
+=======
+        HandleRemoveOutdatedThreadsFromRam();
+>>>>>>> master
 
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
@@ -49,7 +56,11 @@ public static class Handle
     private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
         MessageEventArgs messageEventArgs, GithubInfo? githubInfo)
     {
+<<<<<<< HEAD
         var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message, githubInfo);
+=======
+        var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message);
+>>>>>>> master
 
         if (messageThread == null) return;
 
@@ -84,7 +95,11 @@ public static class Handle
         );
     }
 
+<<<<<<< HEAD
     private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage, GithubInfo? githubInfo)
+=======
+    private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
+>>>>>>> master
     {
         GlobalVariables.Threads ??= new MessageThreadStore();
         GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
@@ -99,6 +114,7 @@ public static class Handle
 
                     var messageId = messageReplyToMessage.MessageId;
                     var chatId = messageReplyToMessage.Chat.Id;
+<<<<<<< HEAD
 
                     var variableChildren = startMessage.Children;
 
@@ -198,6 +214,20 @@ public static class Handle
             var i = g.Issue.Get(owner, repo, issueNumber).Result;
 
             if (i.State != ItemState.Open) return;
+=======
+
+                    var variableChildren = startMessage.Children;
+
+                    if (startMessage.MessageId == messageId &&
+                        startMessage.ChatId == chatId)
+                    {
+                        variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                        WriteThreadsToFile();
+
+                        return startMessage;
+                    }
+>>>>>>> master
 
             Comments.CreateComment(telegramBotAbstract, issueNumber, "Closed issue for inactivity.",
                 v2.GithubInfo);
@@ -220,9 +250,60 @@ public static class Handle
         {
             var date = GetItalianDateTime(e);
 
+                    foreach (var childMessage in variableChildren)
+                        if (childMessage.MessageId == messageId &&
+                            childMessage.ChatId == chatId)
+                        {
+                            variableChildren.Add(
+                                new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                            WriteThreadsToFile();
+
+                            return startMessage;
+                        }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static void HandleRemoveOutdatedThreadsFromRam()
+    {
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+
+        var deleted = false;
+        lock (GlobalVariables.Threads)
+        {
+            var dateTimes = GlobalVariables.Threads.Dict.Keys
+                .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
+                .ToList();
+
+            foreach (var variable in dateTimes)
+            {
+                GlobalVariables.Threads.Dict.Remove(variable);
+                deleted = true;
+            }
+
+            if (deleted) WriteThreadsToFile();
+        }
+    }
+
+    private static void HandleCreateIssue(TelegramBotAbstract t, MessageEventArgs e, ChatIdTgWith100 chatIdTgWith100)
+    {
+        var messageText = e.Message.Text;
+        if (string.IsNullOrEmpty(messageText))
+            return;
+
+        try
+        {
+            var date = GetItalianDateTime(e);
+
             var chatId = chatIdTgWith100.Id;
 
             var body = BodyClass.GetBody(e, chatId, date, messageText);
+<<<<<<< HEAD
 
             var titleIssue = messageText.Length > MaxLengthTitleIssue
                 ? messageText[..MaxLengthTitleIssue]
@@ -247,6 +328,31 @@ public static class Handle
                 if (!GlobalVariables.Threads.Dict.ContainsKey(dateTime))
                     GlobalVariables.Threads.Dict[dateTime] = new List<MessageThread>();
 
+=======
+
+            var titleIssue = messageText.Length > MaxLengthTitleIssue
+                ? messageText[..MaxLengthTitleIssue]
+                : messageText;
+
+            var issue = CreateIssue.Create(titleIssue, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
+
+            var messageThread = new MessageThread
+            {
+                MessageId = e.Message.MessageId,
+                ChatId = e.Message.Chat.Id,
+                IssueNumber = issue.Number
+            };
+
+            GlobalVariables.Threads ??= new MessageThreadStore();
+            GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+
+            lock (GlobalVariables.Threads)
+            {
+                var dateTime = DateTime.Now;
+                if (!GlobalVariables.Threads.Dict.ContainsKey(dateTime))
+                    GlobalVariables.Threads.Dict[dateTime] = new List<MessageThread>();
+
+>>>>>>> master
                 GlobalVariables.Threads.Dict[dateTime].Add(messageThread);
 
                 WriteThreadsToFile();
