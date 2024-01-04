@@ -8,19 +8,21 @@ public static class BodyClass
 {
     public static string GetBody(MessageEventArgs e, long chatId, DateTime date, string? messageText)
     {
-        var body = "Link to message: https://t.me/c/" + chatId + "/" + e.Message.MessageId;
+        var eMessage = e.Message;
+
+        var body = "Link to message: https://t.me/c/" + chatId + "/" + eMessage.MessageId;
         body += "\n\n\n";
 
-        body += "When: " + date.ToString(CultureInfo.InvariantCulture);
-        body += "\n\n\n";
-        body += "Chat title: " + e.Message.Chat.Title;
-        body += "\n\n\n";
-        body += "Chat type: " + e.Message.Chat.Type;
-        body += "\n\n\n";
-        body += "Message type: " + e.Message.Type;
-        body += "\n\n\n";
-        body += "From user id: " + e.Message.From?.Id;
-        body += "\n\n\n";
+        body += "When: " + date.ToString("dd/MM/yyyy HH:mm:ss");
+        body += "\n";
+        body += "Chat title: " + eMessage.Chat.Title;
+        body += "\n";
+        body += "Chat type: " + eMessage.Chat.Type;
+        body += "\n";
+        body += "Message type: " + eMessage.Type;
+        body += "\n";
+        body += "From user id: " + eMessage.From?.Id;
+        body += "\n\n";
         body += "## Body:\n\n";
         body += messageText;
         return body;
