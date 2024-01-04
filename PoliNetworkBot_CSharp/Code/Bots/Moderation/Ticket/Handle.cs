@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
@@ -24,7 +25,7 @@ public static class Handle
 
     public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
-        HandleRemoveOutdatedThreadsFromRam();
+        HandleRemoveOutdatedThreadsFromRam(t);
 
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
@@ -48,7 +49,7 @@ public static class Handle
     private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
         MessageEventArgs messageEventArgs, GithubInfo? githubInfo)
     {
-        var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message);
+        var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message, githubInfo);
 
         if (messageThread == null) return;
 
@@ -83,7 +84,7 @@ public static class Handle
         );
     }
 
-    private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
+    private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage, GithubInfo? githubInfo)
     {
         GlobalVariables.Threads ??= new MessageThreadStore();
         GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
@@ -104,8 +105,10 @@ public static class Handle
                     if (startMessage.MessageId == messageId &&
                         startMessage.ChatId == chatId)
                     {
-                        variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+                        variableChildren.Add(new MessageThread
+                            { MessageId = newMessage.MessageId, ChatId = chatId, GithubInfo = githubInfo });
 
+                        UpdateKeyTime(key, startMessage);
                         WriteThreadsToFile();
 
                         return startMessage;
@@ -117,8 +120,10 @@ public static class Handle
                             childMessage.ChatId == chatId)
                         {
                             variableChildren.Add(
-                                new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+                                new MessageThread
+                                    { MessageId = newMessage.MessageId, ChatId = chatId, GithubInfo = githubInfo });
 
+                            UpdateKeyTime(key, startMessage);
                             WriteThreadsToFile();
 
                             return startMessage;
@@ -130,25 +135,78 @@ public static class Handle
         return null;
     }
 
-    private static void HandleRemoveOutdatedThreadsFromRam()
+    private static void UpdateKeyTime(DateTime key, MessageThread startMessage)
     {
         GlobalVariables.Threads ??= new MessageThreadStore();
         GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
 
-        var deleted = false;
+        lock (GlobalVariables.Threads)
+        {
+            var list = GlobalVariables.Threads.Dict[key];
+            list.Remove(startMessage);
+
+            var newDate = DateTime.Now;
+
+            if (!GlobalVariables.Threads.Dict.ContainsKey(newDate))
+                GlobalVariables.Threads.Dict[newDate] = new List<MessageThread>();
+
+            GlobalVariables.Threads.Dict[newDate].Add(startMessage);
+        }
+    }
+
+    private static void HandleRemoveOutdatedThreadsFromRam(TelegramBotAbstract telegramBotAbstract)
+    {
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
+
+
+        var deletedList = new List<List<MessageThread>>();
         lock (GlobalVariables.Threads)
         {
             var dateTimes = GlobalVariables.Threads.Dict.Keys
                 .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
                 .ToList();
 
+
             foreach (var variable in dateTimes)
             {
+                var messageThreads = GlobalVariables.Threads.Dict[variable];
                 GlobalVariables.Threads.Dict.Remove(variable);
-                deleted = true;
+
+                deletedList.Add(messageThreads);
             }
 
-            if (deleted) WriteThreadsToFile();
+            if (deletedList.Count > 0) WriteThreadsToFile();
+        }
+
+        foreach (var v1 in deletedList)
+        foreach (var v2 in v1)
+            CommentAndClose(v2, telegramBotAbstract);
+    }
+
+    private static void CommentAndClose(MessageThread v2, TelegramBotAbstract telegramBotAbstract)
+    {
+        try
+        {
+            if (v2.IssueNumber == null)
+                return;
+
+            var g = DataTicketClass.GetGitHubClient(telegramBotAbstract);
+            var owner = v2.GithubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
+            var repo = v2.GithubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
+            var issueNumber = v2.IssueNumber.Value;
+            var i = g.Issue.Get(owner, repo, issueNumber).Result;
+
+            if (i.State != ItemState.Open) return;
+
+            Comments.CreateComment(telegramBotAbstract, issueNumber, "Closed issue for inactivity.",
+                v2.GithubInfo);
+            var issueUpdate = new IssueUpdate { State = ItemState.Closed, StateReason = ItemStateReason.Completed };
+            g.Issue.Update(owner, repo, issueNumber, issueUpdate);
+        }
+        catch (Exception ex)
+        {
+            NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotAbstract, null);
         }
     }
 
@@ -176,7 +234,8 @@ public static class Handle
             {
                 MessageId = e.Message.MessageId,
                 ChatId = e.Message.Chat.Id,
-                IssueNumber = issue.Number
+                IssueNumber = issue.Number,
+                GithubInfo = chatIdTgWith100.GithubInfo
             };
 
             GlobalVariables.Threads ??= new MessageThreadStore();
