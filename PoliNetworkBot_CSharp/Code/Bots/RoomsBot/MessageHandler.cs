@@ -104,7 +104,7 @@ public static class MessageHandler
         L replyLang;
         var choicesToState =
             langCode == "it" ? Data.Enums.MainMenuOptionsToFunction : Data.Enums.MainMenuOptionsToStateEn;
-        var function = Data.Enums.Function.NULL_FUNCTION;
+        Data.Enums.Function function;
         if (callbackFunction != null)
         {
             function = conversation!.CurrentFunction;
@@ -459,26 +459,8 @@ public static class MessageHandler
             case Data.Enums.Function.OCCUPANCIES:
                 conversation.ResetConversationFunctions();
                 conversation.State = Data.Enums.ConversationState.START;
-                var fileString = Fetcher.GetRawOccupancies(conversation.Campus!, date);
-                markupObject = ReplyMarkupGenerator.BackButton();
+                string fileString = Fetcher.GetRawOccupancies(conversation.Campus!, date);
                 replyLang = new L("it", "", "en", "");
-
-                if (fileString == null)
-                {
-                    replyLang = new L("it", "Errore interno", "en", "Internal error");
-
-                    var messageOptions3 = new MessageOptions
-
-                    {
-                        ChatId = message.From?.Id,
-                        Text = replyLang,
-                        ChatType = ChatType.Private,
-                        Lang = message.From?.LanguageCode,
-
-                        ReplyMarkupObject = markupObject
-                    };
-                    return await botClient.SendTextMessageAsync(messageOptions3);
-                }
 
                 var encoding = Encoding.UTF8;
                 var stream = new MemoryStream(encoding.GetBytes(fileString));
