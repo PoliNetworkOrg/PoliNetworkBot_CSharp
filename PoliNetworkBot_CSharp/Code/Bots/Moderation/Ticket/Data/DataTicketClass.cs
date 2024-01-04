@@ -32,13 +32,19 @@ public static class DataTicketClass
             return _httpClient;
 
         _httpClient = new HttpClient();
+        SetTokenToHttpClient(telegramBotAbstract.GithubToken, _httpClient);
         var d = _httpClient.DefaultRequestHeaders;
-        d.Authorization = new AuthenticationHeaderValue("Bearer", telegramBotAbstract.GithubToken);
         d.Add("Accept", "application/vnd.github+json");
         d.Add("X-GitHub-Api-Version", "2022-11-28");
         d.Add("User-Agent", NameUserAgent);
 
         return _httpClient;
+    }
+
+    private static void SetTokenToHttpClient(string? token, HttpClient httpClient2)
+    {
+        var d = httpClient2.DefaultRequestHeaders;
+        d.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
     public static GitHubClient GetGitHubClient(TelegramBotAbstract telegramBotAbstract)
@@ -48,8 +54,22 @@ public static class DataTicketClass
 
         var productHeaderValue = new ProductHeaderValue(NameUserAgent);
         _gitHubClient = new GitHubClient(productHeaderValue);
-        var tokenAuth = new Credentials(telegramBotAbstract.GithubToken);
-        _gitHubClient.Credentials = tokenAuth;
+        SetGithubTokenCredentialsClient(telegramBotAbstract.GithubToken, _gitHubClient);
         return _gitHubClient;
+    }
+
+    private static void SetGithubTokenCredentialsClient(string? newToken, GitHubClient gitHubClient)
+    {
+        var tokenAuth = new Credentials(newToken);
+        gitHubClient.Credentials = tokenAuth;
+    }
+
+    public static void SetToken(string? githubToken)
+    {
+        if (_httpClient != null)
+            SetTokenToHttpClient(githubToken, _httpClient);
+
+        if (_gitHubClient != null)
+            SetGithubTokenCredentialsClient(githubToken, _gitHubClient);
     }
 }

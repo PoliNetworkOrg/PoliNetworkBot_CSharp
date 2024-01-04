@@ -27,6 +27,8 @@ public static class GithubToken
         arg2.BotInfoAbstract ??= new BotInfoAbstract();
         arg2.BotInfoAbstract.GithubToken = githubToken;
 
+        Bots.Moderation.Ticket.Data.DataTicketClass.SetToken(githubToken);
+
         var messageOptions = new MessageOptions
         {
             ChatId = arg1?.Message.From?.Id,
