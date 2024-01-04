@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using PoliNetworkBot_CSharp.Code.Objects;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
