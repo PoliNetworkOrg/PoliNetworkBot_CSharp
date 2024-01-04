@@ -2,12 +2,12 @@
 using PoliNetworkBot_CSharp.Code.Config;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.CommandDispatcher;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Ram;
 using PoliNetworkBot_CSharp.Code.Utils.Restore;
 using PoliNetworkBot_CSharp.Code.Utils.Running;
 using Telegram.Bot.Types.Enums;
@@ -309,15 +309,10 @@ public static class SwitchDispatcher
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("Scrivi la config attuale sui file di config"),
             null, null),
-        
-        new Command("get_ram", GetRam,
+
+        new Command("get_ram", SendRamInfo.GetRam,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("Ottieni info sulla ram"),
             null, null)
     };
-
-    private static CommandExecutionState GetRam(MessageEventArgs? arg1, TelegramBotAbstract? arg2, string[]? arg3)
-    {
-        throw new System.NotImplementedException();
-    }
 }
