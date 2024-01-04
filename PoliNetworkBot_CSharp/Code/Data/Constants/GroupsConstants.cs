@@ -1,5 +1,4 @@
-﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
-using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
+﻿using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 
 namespace PoliNetworkBot_CSharp.Code.Data.Constants;
 

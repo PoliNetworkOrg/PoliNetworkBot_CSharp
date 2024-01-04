@@ -25,18 +25,18 @@ public static class Comments
     {
         //https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
         var client = DataTicketClass.GetHttpClient(telegramBotAbstract);
-        JObject jObject = new JObject
+        var jObject = new JObject
         {
             ["body"] = body
         };
         var serializeObject = JsonConvert.SerializeObject(jObject);
         const string applicationJson = "application/json";
-        StringContent content = new StringContent(serializeObject, Encoding.UTF8, applicationJson);
+        var content = new StringContent(serializeObject, Encoding.UTF8, applicationJson);
 
         var uri =
             $"https://api.github.com/repos/{DataTicketClass.OwnerRepo}/{DataTicketClass.NameRepo}/issues/{issueNumber}/comments";
 
-        client.PostAsync(requestUri: uri,
-            content: content);
+        client.PostAsync(uri,
+            content);
     }
 }
