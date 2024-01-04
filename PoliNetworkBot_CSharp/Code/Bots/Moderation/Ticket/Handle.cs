@@ -50,7 +50,7 @@ public static class Handle
         if (messageThread == null) return;
 
 
-        HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread, githubInfo: githubInfo);
+        HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread, githubInfo);
     }
 
     private static void HandleWriteComment(TelegramBotAbstract telegramBotAbstract, MessageEventArgs messageEventArgs,
@@ -76,7 +76,7 @@ public static class Handle
             telegramBotAbstract,
             threadIssueNumber,
             body,
-            githubInfo: githubInfo
+            githubInfo
         );
     }
 
