@@ -22,8 +22,10 @@ public static class Outdated
         var deletedList = new List<List<MessageThread>>();
         lock (GlobalVariables.Threads)
         {
-            bool FindOld(DateTime variable) =>
-                variable.AddDays(DataTicketClass.MaxTimeThreadInRamDays) < DateTime.Now;
+            bool FindOld(DateTime variable)
+            {
+                return variable.AddDays(DataTicketClass.MaxTimeThreadInRamDays) < DateTime.Now;
+            }
 
             var dateTimes = GlobalVariables.Threads.Dict.Keys
                 .Where(FindOld)
