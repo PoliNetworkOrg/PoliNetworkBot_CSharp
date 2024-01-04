@@ -23,7 +23,7 @@ using TeleSharp.TL;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 
 internal static class ModerationCheck
 {

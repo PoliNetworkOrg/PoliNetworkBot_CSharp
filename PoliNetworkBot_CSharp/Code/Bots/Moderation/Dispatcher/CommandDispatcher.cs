@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using JsonPolimi_Core_nf.Data;
 using JsonPolimi_Core_nf.Tipi;
 using JsonPolimi_Core_nf.Utils;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;

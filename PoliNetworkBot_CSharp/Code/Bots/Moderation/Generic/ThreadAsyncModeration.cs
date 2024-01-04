@@ -21,7 +21,7 @@ using Telegram.Bot.Types.Enums;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 
 public static class ThreadAsyncModeration
 {

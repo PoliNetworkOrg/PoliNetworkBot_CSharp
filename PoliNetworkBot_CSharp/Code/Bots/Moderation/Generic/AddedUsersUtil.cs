@@ -9,7 +9,7 @@ using Groups = PoliNetworkBot_CSharp.Code.Data.Constants.GroupsConstants;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 
 public static class AddedUsersUtil
 {

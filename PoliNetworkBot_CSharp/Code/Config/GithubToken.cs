@@ -27,7 +27,14 @@ public static class GithubToken
         arg2.BotInfoAbstract ??= new BotInfoAbstract();
         arg2.BotInfoAbstract.GithubToken = githubToken;
 
+        var messageOptions = new MessageOptions()
+        {
+            ChatId = arg1?.Message.From?.Id,
+            Text = new L("Github token settato con successo.")
+        };
+        var x = arg2.SendTextMessageAsync(messageOptions).Result;
 
-        return CommandExecutionState.SUCCESSFUL;
+        var isSuccess = x?.IsSuccess() ?? false;
+        return isSuccess ? CommandExecutionState.SUCCESSFUL : CommandExecutionState.ERROR_DEFAULT;
     }
 }

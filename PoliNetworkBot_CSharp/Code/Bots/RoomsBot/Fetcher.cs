@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 using PoliNetworkBot_CSharp.Code.Utils;
 

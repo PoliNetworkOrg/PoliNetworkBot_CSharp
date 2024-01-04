@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Conversation;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Dispatcher;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.SpamCheck;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 using PoliNetworkBot_CSharp.Code.Data.Variables;

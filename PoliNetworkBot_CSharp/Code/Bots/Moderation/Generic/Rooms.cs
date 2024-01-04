@@ -17,7 +17,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 
 internal static class Rooms
 {
