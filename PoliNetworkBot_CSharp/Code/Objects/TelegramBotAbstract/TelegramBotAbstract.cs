@@ -28,7 +28,7 @@ using File = Telegram.Bot.Types.File;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 
-public partial class TelegramBotAbstract
+public class TelegramBotAbstract
 {
     private readonly TelegramBotClient? _botClient;
     private readonly string? _contactString;
@@ -659,7 +659,8 @@ public partial class TelegramBotAbstract
     /// <summary>
     ///     Send text message
     /// </summary>
-    /// <param name="messageOptions"></param> Object with all the params inside
+    /// <param name="messageOptions"></param>
+    /// Object with all the params inside
     /// <returns>MessageSentResult of the last message sent</returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     internal async Task<MessageSentResult?> SendTextMessageAsync(MessageOptions messageOptions)

@@ -480,16 +480,10 @@ internal static class ModerationCheck
 
         const int minutesWait = 2;
 
-        if (r1?.GetChatType() == ChatType.Private)
-        {
-            return;
-        }
+        if (r1?.GetChatType() == ChatType.Private) return;
 
         var r2 = r1?.GetMessage();
-        if (r2 == null)
-        {
-            return;
-        }
+        if (r2 == null) return;
 
         switch (r2)
         {
@@ -663,7 +657,7 @@ internal static class ModerationCheck
 
         var usernameAndNameCheckResults = usernameCheck
             .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool);
-        
+
         foreach (var usernameCheck2 in usernameAndNameCheckResults)
         {
             await SendUsernameWarning(telegramBotClient,
