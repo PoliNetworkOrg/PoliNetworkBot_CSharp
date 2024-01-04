@@ -4,10 +4,12 @@ using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
+using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -83,12 +85,13 @@ public static class Handle
 
     private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
     {
-        GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
         lock (GlobalVariables.Threads)
         {
-            foreach (var key in GlobalVariables.Threads.Keys)
+            foreach (var key in GlobalVariables.Threads.Dict.Keys)
             {
-                var startMessage2 = GlobalVariables.Threads[key];
+                var startMessage2 = GlobalVariables.Threads.Dict[key];
                 foreach (var startMessage in startMessage2)
                 {
                     startMessage.Children ??= new List<MessageThread>();
@@ -102,6 +105,9 @@ public static class Handle
                         startMessage.ChatId == chatId)
                     {
                         variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                        WriteThreadsToFile();
+
                         return startMessage;
                     }
 
@@ -112,6 +118,9 @@ public static class Handle
                         {
                             variableChildren.Add(
                                 new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+
+                            WriteThreadsToFile();
+
                             return startMessage;
                         }
                 }
@@ -123,15 +132,26 @@ public static class Handle
 
     private static void HandleRemoveOutdatedThreadsFromRam()
     {
-        GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+        GlobalVariables.Threads ??= new MessageThreadStore();
+        GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
 
+        var deleted = false;
         lock (GlobalVariables.Threads)
         {
-            var dateTimes = GlobalVariables.Threads.Keys
+            var dateTimes = GlobalVariables.Threads.Dict.Keys
                 .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
                 .ToList();
 
-            foreach (var variable in dateTimes) GlobalVariables.Threads.Remove(variable);
+            foreach (var variable in dateTimes)
+            {
+                GlobalVariables.Threads.Dict.Remove(variable);
+                deleted = true;
+            }
+
+            if (deleted)
+            {
+                WriteThreadsToFile();
+            }
         }
     }
 
@@ -162,20 +182,38 @@ public static class Handle
                 IssueNumber = issue.Number
             };
 
-            GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+            GlobalVariables.Threads ??= new MessageThreadStore();
+            GlobalVariables.Threads.Dict ??= new Dictionary<DateTime, List<MessageThread>>();
 
             lock (GlobalVariables.Threads)
             {
                 var dateTime = DateTime.Now;
-                if (!GlobalVariables.Threads.ContainsKey(dateTime))
-                    GlobalVariables.Threads[dateTime] = new List<MessageThread>();
+                if (!GlobalVariables.Threads.Dict.ContainsKey(dateTime))
+                    GlobalVariables.Threads.Dict[dateTime] = new List<MessageThread>();
 
-                GlobalVariables.Threads[dateTime].Add(messageThread);
+                GlobalVariables.Threads.Dict[dateTime].Add(messageThread);
+
+                WriteThreadsToFile();
             }
         }
         catch (Exception ex)
         {
             NotifyUtil.NotifyOwnerWithLog2(ex, t, new EventArgsContainer { MessageEventArgs = e });
+        }
+    }
+
+    private static void WriteThreadsToFile()
+    {
+        try
+        {
+            FileSerialization.WriteToBinaryFile(
+                Paths.Bin.MessagesThread,
+                GlobalVariables.Threads
+            );
+        }
+        catch
+        {
+            // ignored
         }
     }
 

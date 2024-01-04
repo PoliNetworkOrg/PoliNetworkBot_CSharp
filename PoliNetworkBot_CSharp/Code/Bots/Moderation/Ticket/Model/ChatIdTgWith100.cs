@@ -1,8 +1,10 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 
 [Serializable]
+[JsonObject(MemberSerialization.Fields)]
 public class ChatIdTgWith100
 {
     public GithubInfo? GithubInfo;

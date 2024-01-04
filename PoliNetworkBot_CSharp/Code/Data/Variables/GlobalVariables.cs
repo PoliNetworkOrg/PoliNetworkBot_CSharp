@@ -29,7 +29,7 @@ public static class GlobalVariables
     public static List<long>? NoUsernameCheckInThisChats;
     public static List<string>? AllowedTags;
     public static Dictionary<long, DateTime>? UsernameWarningDictSent;
-    public static Dictionary<DateTime, List<MessageThread>>? Threads; //salviamo in ram i threads di alcuni gruppi
+    public static MessageThreadStore? Threads; //salviamo in ram i threads di alcuni gruppi
 
 
     private static bool _alreadyLoaded;
@@ -44,6 +44,7 @@ public static class GlobalVariables
         _alreadyLoaded = true;
 
         LoadMessagesToDelete();
+        LoadMessagesThread();
 
         Creators = new List<TelegramUser>
         {
@@ -146,6 +147,32 @@ public static class GlobalVariables
         {
             -1443285113
         };
+    }
+
+    private static void LoadMessagesThread()
+    {
+        Threads ??= new MessageThreadStore();
+
+        lock (Threads)
+        {
+            try
+            {
+                var m = FileSerialization.ReadFromBinaryFile<MessageThreadStore>(
+                    Paths.Bin.MessagesThread);
+
+                if (m is null or null)
+                {
+                    Threads = new MessageThreadStore();
+                    return;
+                }
+
+                Threads = m;
+            }
+            catch
+            {
+                // ignored
+            }
+        }
     }
 
     private static void LoadMessagesToDelete()

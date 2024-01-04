@@ -6,10 +6,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 
 [Serializable]
 [JsonObject(MemberSerialization.Fields)]
-public class MessageThread
+public class MessageThreadStore
 {
-    public long? ChatId;
-    public List<MessageThread>? Children;
-    public int? IssueNumber;
-    public int? MessageId;
+    public Dictionary<DateTime, List<MessageThread>>? Dict;
 }
