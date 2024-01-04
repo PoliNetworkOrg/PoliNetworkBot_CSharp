@@ -10,6 +10,7 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -34,22 +35,14 @@ public static class RamSize
     {
         try
         {
-            var proc = Process.GetCurrentProcess();
-            var procPrivateMemorySize64 = proc.PrivateMemorySize64;
-            var ramUsed2 = GC.GetTotalMemory(true);
-            var ramUsed = new RamUsed(procPrivateMemorySize64, ramUsed2);
+            var ramUsed = GetRamUsed();
             var firstTime = _ramUsedStatic == null;
             _ramUsedStatic ??= new RamUsedCollection();
             _ramUsedStatic.Append(ramUsed);
 
             if (!_ramUsedStatic.InferioreDi(ramUsed) && firstTime == false) return;
 
-            var backupGroup = GroupsConstants.BackupGroup.FullLong();
-
-            //send info
-            await SendRamSize(ramUsed, backupGroup);
-            await SendMessageStoreCount(backupGroup);
-            await SendMessageThreadsCount(backupGroup);
+            await SendFullRam(ramUsed, null);
         }
         catch (Exception? ex)
         {
@@ -57,7 +50,28 @@ public static class RamSize
         }
     }
 
-    private static async Task SendMessageStoreCount(long backupGroup)
+    private static RamUsed GetRamUsed()
+    {
+        var proc = Process.GetCurrentProcess();
+        var procPrivateMemorySize64 = proc.PrivateMemorySize64;
+        var ramUsed2 = GC.GetTotalMemory(true);
+        var ramUsed = new RamUsed(procPrivateMemorySize64, ramUsed2);
+        return ramUsed;
+    }
+
+    public static async Task SendFullRam(RamUsed? ramUsed1, TelegramBotAbstract? telegramBotAbstract)
+    {
+        ramUsed1 ??= GetRamUsed();
+
+        var backupGroup = GroupsConstants.BackupGroup.FullLong();
+
+        //send info
+        await SendRamSize(ramUsed1, backupGroup, telegramBotAbstract);
+        await SendMessageStoreCount(backupGroup, telegramBotAbstract);
+        await SendMessageThreadsCount(backupGroup, telegramBotAbstract);
+    }
+
+    private static async Task SendMessageStoreCount(long backupGroup, TelegramBotAbstract? telegramBotAbstract)
     {
         var storeSizeMessage = "#messageStorageCount " + MessagesStore.GetStoreSize();
         Logger.Logger.WriteLine(storeSizeMessage);
@@ -66,21 +80,23 @@ public static class RamSize
             {
                 { "en", storeSizeMessage }
             });
-        await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
+        var bot = telegramBotAbstract ?? BotUtil.GetFirstModerationRealBot();
+        await SendMessage.SendMessageInAGroup(bot, "en",
             language, null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
     }
 
-    private static async Task SendMessageThreadsCount(long backupGroup)
+    private static async Task SendMessageThreadsCount(long backupGroup, TelegramBotAbstract? telegramBotAbstract)
     {
         const string messageThreadCount = "messageThreadCount";
         var num = "#" + messageThreadCount + " " + Stats.GetCountStored();
         Logger.Logger.WriteLine(messageThreadCount + ": " + num);
         var language = new L(num);
-        await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), null,
+        var bot = telegramBotAbstract ?? BotUtil.GetFirstModerationRealBot();
+        await SendMessage.SendMessageInAGroup(bot, null,
             language, null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
     }
 
-    private static async Task SendRamSize(RamUsed ramUsed, long backupGroup)
+    private static async Task SendRamSize(RamUsed ramUsed, long backupGroup, TelegramBotAbstract? telegramBotAbstract)
     {
         var message = "#ramsize " + ramUsed;
         Logger.Logger.WriteLine(message);
@@ -89,7 +105,8 @@ public static class RamSize
             {
                 { "en", message }
             });
-        await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
+        var bot = telegramBotAbstract ?? BotUtil.GetFirstModerationRealBot();
+        await SendMessage.SendMessageInAGroup(bot, "en",
             language, null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
     }
 }

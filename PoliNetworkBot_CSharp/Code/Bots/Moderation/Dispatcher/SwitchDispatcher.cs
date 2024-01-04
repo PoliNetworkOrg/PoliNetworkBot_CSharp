@@ -7,6 +7,7 @@ using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Backup;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
+using PoliNetworkBot_CSharp.Code.Utils.Ram;
 using PoliNetworkBot_CSharp.Code.Utils.Restore;
 using PoliNetworkBot_CSharp.Code.Utils.Running;
 using Telegram.Bot.Types.Enums;
@@ -307,6 +308,11 @@ public static class SwitchDispatcher
         new Command("write_config_to_file", ConfigSet.WriteConfigToFile,
             new List<ChatType> { ChatType.Private }, Permission.OWNER,
             new L("Scrivi la config attuale sui file di config"),
+            null, null),
+
+        new Command("get_ram", SendRamInfo.GetRam,
+            new List<ChatType> { ChatType.Private }, Permission.OWNER,
+            new L("Ottieni info sulla ram"),
             null, null)
     };
 }

@@ -3,7 +3,7 @@
 namespace PoliNetworkBot_CSharp.Code.Utils;
 
 [Serializable]
-internal class RamUsed
+public class RamUsed
 {
     internal long Ram1;
     internal long Ram2;
