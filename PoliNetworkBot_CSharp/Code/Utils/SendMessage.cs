@@ -133,18 +133,16 @@ internal static class SendMessage
 
         if (telegramBotClient == null) return null;
 
-
         try
         {
+            var replyMarkupObject = inlineKeyboardMarkup == null ? null : new ReplyMarkupObject(inlineKeyboardMarkup);
             var messageOptions = new MessageOptions
-
             {
                 ChatId = chatId,
                 Text = text,
                 ParseMode = parseMode,
                 Lang = lang,
-
-                ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
+                ReplyMarkupObject = replyMarkupObject,
                 ChatType = chatType,
                 ReplyToMessageId = replyToMessageId,
                 DisablePreviewLink = disablePreviewLink,

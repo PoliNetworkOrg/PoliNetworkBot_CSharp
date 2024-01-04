@@ -45,7 +45,6 @@ public static class CallbackUtils
         if (telegramBotAbstract == null) return null;
 
         var messageOptions = new MessageOptions
-
         {
             ChatId = chatToSendTo,
             Text = text,
