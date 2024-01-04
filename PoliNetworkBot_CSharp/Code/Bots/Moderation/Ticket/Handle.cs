@@ -16,8 +16,9 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 public static class Handle
 {
     private const int MaxLengthTitleIssue = 200;
+    private const int MaxTimeThreadInRamDays = 3;
 
-    private static readonly List<MessageThread> Threads = new();
+    private static readonly Dictionary<DateTime, List<MessageThread>> Threads = new();
 
     public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -84,30 +85,35 @@ public static class Handle
     {
         lock (Threads)
         {
-            foreach (var startMessage in Threads)
+            foreach (var key in Threads.Keys)
             {
-                startMessage.Children ??= new List<MessageThread>();
-
-                var messageId = messageReplyToMessage.MessageId;
-                var chatId = messageReplyToMessage.Chat.Id;
-
-                var variableChildren = startMessage.Children;
-
-                if (startMessage.MessageId == messageId &&
-                    startMessage.ChatId == chatId)
+                var startMessage2 = Threads[key];
+                foreach (var startMessage in startMessage2)
                 {
-                    variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
-                    return startMessage;
-                }
+                    startMessage.Children ??= new List<MessageThread>();
 
+                    var messageId = messageReplyToMessage.MessageId;
+                    var chatId = messageReplyToMessage.Chat.Id;
 
-                foreach (var childMessage in variableChildren)
-                    if (childMessage.MessageId == messageId &&
-                        childMessage.ChatId == chatId)
+                    var variableChildren = startMessage.Children;
+
+                    if (startMessage.MessageId == messageId &&
+                        startMessage.ChatId == chatId)
                     {
                         variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
                         return startMessage;
                     }
+
+
+                    foreach (var childMessage in variableChildren)
+                        if (childMessage.MessageId == messageId &&
+                            childMessage.ChatId == chatId)
+                        {
+                            variableChildren.Add(
+                                new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+                            return startMessage;
+                        }
+                }
             }
         }
 
@@ -118,14 +124,10 @@ public static class Handle
     {
         lock (Threads)
         {
-            for (var index = 0; index < Threads.Count; index++)
-            {
-                var variable = Threads[index];
-                if (variable.DateTime != null && variable.DateTime.Value.AddDays(3) >= DateTime.Now) continue;
+            var dateTimes = Threads.Keys.Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
+                .ToList();
 
-                Threads.RemoveAt(index);
-                index--;
-            }
+            foreach (var variable in dateTimes) Threads.Remove(variable);
         }
     }
 
@@ -151,7 +153,6 @@ public static class Handle
 
             var messageThread = new MessageThread
             {
-                DateTime = DateTime.Now,
                 MessageId = e.Message.MessageId,
                 ChatId = e.Message.Chat.Id,
                 IssueNumber = issue.Number
@@ -159,7 +160,11 @@ public static class Handle
 
             lock (Threads)
             {
-                Threads.Add(messageThread);
+                var dateTime = DateTime.Now;
+                if (!Threads.ContainsKey(dateTime))
+                    Threads[dateTime] = new List<MessageThread>();
+
+                Threads[dateTime].Add(messageThread);
             }
         }
         catch (Exception ex)

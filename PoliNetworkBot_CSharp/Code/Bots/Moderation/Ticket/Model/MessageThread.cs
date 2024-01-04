@@ -8,7 +8,6 @@ public class MessageThread
 {
     public long? ChatId;
     public List<MessageThread>? Children;
-    public DateTime? DateTime;
     public int? IssueNumber;
     public int? MessageId;
 }
