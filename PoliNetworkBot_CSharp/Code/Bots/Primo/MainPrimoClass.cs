@@ -20,7 +20,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Primo;
 
-public static class Main
+public static class MainPrimoClass
 {
     internal static void MainMethod(object? sender, MessageEventArgs? e)
     {

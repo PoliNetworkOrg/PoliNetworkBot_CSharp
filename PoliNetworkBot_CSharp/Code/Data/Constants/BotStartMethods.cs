@@ -28,7 +28,7 @@ public static class BotStartMethods
         if (s == Moderation.Item1)
             x = MainClass.MainMethod;
         else if (s == Primo.Item1)
-            x = Main.MainMethod;
+            x = MainPrimoClass.MainMethod;
         else if (s == Anon.Item1)
             x = MainAnon.MainMethod;
         else if (s == Material.Item1)
