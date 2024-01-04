@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using Telegram.Bot.Types;
 
@@ -22,7 +23,7 @@ public class MessageList
         Messages = new List<Message?>();
     }
 
-    public void TryDeleteMessagesAsync(AbstractBot.TelegramBotAbstract telegramBotClient)
+    public void TryDeleteMessagesAsync(TelegramBotAbstract telegramBotClient)
     {
         lock (this)
         {

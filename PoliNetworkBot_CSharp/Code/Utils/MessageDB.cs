@@ -643,13 +643,9 @@ public static class MessageDb
         {
             var m = GlobalVariables.MessagesToDelete[i];
             if (m.ToDelete())
-            {
                 await DeleteSingleMessage(messageEventArgs, m, i);
-            }
             else
-            {
                 i++;
-            }
         }
     }
 
@@ -658,10 +654,7 @@ public static class MessageDb
         GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
 
         var success = await m.Delete(messageEventArgs);
-        if (!success)
-        {
-            return;
-        }
+        if (!success) return;
 
         lock (GlobalVariables.MessagesToDelete)
         {

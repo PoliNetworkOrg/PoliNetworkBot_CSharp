@@ -475,10 +475,13 @@ internal static class ModerationCheck
         string? lang, string? usernameOfUser, long? userId, string? firstName, string? lastName,
         long chatId, ChatType messageChatType, MessageEventArgs? messageEventArgs)
     {
+        if (telegramBotClient == null)
+            return;
+
         var r1 = await SendMessage.SendMessageInPrivateOrAGroup(telegramBotClient, s2, lang,
             usernameOfUser, userId, firstName, lastName, chatId, messageChatType);
 
-        var botid = telegramBotClient?.GetId();
+        var botid = telegramBotClient.GetId();
         if (botid == null)
             return;
 

@@ -234,7 +234,7 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(AbstractBot.TelegramBotAbstract? sender,
+    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
         if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
@@ -385,7 +385,7 @@ public static class MessagesStore
     }
 
     public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e,
-        AbstractBot.TelegramBotAbstract? sender)
+        TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;

@@ -638,22 +638,14 @@ public class TelegramBotAbstract
 
     internal long? GetId()
     {
-        switch (_isbot)
+        return _isbot switch
         {
-            case BotTypeApi.REAL_BOT:
-                return _botClient?.BotId;
-
-            case BotTypeApi.USER_BOT:
-                break;
-
-            case BotTypeApi.DISGUISED_BOT:
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return _id;
+            BotTypeApi.REAL_BOT => _botClient?.BotId,
+            BotTypeApi.USER_BOT => _id,
+            BotTypeApi.DISGUISED_BOT => _id,
+            BotTypeApi.UNKNOWN => _id,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
 

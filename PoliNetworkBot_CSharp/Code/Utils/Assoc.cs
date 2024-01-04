@@ -830,7 +830,7 @@ public static class Assoc
                 var messageOptions = new MessageOptions
 
                 {
-                     ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
+                    ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
 
                     Text = language,
                     Lang = "en",
@@ -956,6 +956,4 @@ public static class Assoc
         {
             // ignored
         }
-    
-
-}
+    }

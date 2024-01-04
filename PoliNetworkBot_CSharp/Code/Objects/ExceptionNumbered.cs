@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -45,7 +46,7 @@ public class ExceptionNumbered : Exception
     }
 
     internal static async Task<bool> SendExceptionAsync(Exception? e,
-        AbstractBot.TelegramBotAbstract? telegramBotAbstract,
+        TelegramBotAbstract? telegramBotAbstract,
         EventArgsContainer? eventArgsContainer)
     {
         if (telegramBotAbstract == null)
