@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
@@ -10,7 +11,7 @@ using PoliNetworkBot_CSharp.Code.Utils.Notify;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 
-public class Outdated
+public static class Outdated
 {
     public static void HandleRemoveOutdatedThreadsFromRam(TelegramBotAbstract telegramBotAbstract)
     {
@@ -21,10 +22,12 @@ public class Outdated
         var deletedList = new List<List<MessageThread>>();
         lock (GlobalVariables.Threads)
         {
-            var dateTimes = GlobalVariables.Threads.Dict.Keys
-                .Where(variable => variable.AddDays(DataTicketClass.MaxTimeThreadInRamDays) < DateTime.Now)
-                .ToList();
+            bool FindOld(DateTime variable) =>
+                variable.AddDays(DataTicketClass.MaxTimeThreadInRamDays) < DateTime.Now;
 
+            var dateTimes = GlobalVariables.Threads.Dict.Keys
+                .Where(FindOld)
+                .ToList();
 
             foreach (var variable in dateTimes)
             {
@@ -37,8 +40,23 @@ public class Outdated
             if (deletedList.Count > 0) Write.WriteThreadsToFile();
         }
 
-        foreach (var v1 in deletedList)
-        foreach (var v2 in v1)
+
+        try
+        {
+            var task = new Task(() => { CommentAndCloseDeletedList(telegramBotAbstract, deletedList); });
+            task.Start();
+        }
+        catch (Exception ex)
+        {
+            NotifyUtil.NotifyOwnerWithLog2(ex, telegramBotAbstract, null);
+        }
+    }
+
+    private static void CommentAndCloseDeletedList(TelegramBotAbstract telegramBotAbstract,
+        List<List<MessageThread>> deletedList)
+    {
+        var messageThreadsDeleted = deletedList.SelectMany(v1 => v1);
+        foreach (var v2 in messageThreadsDeleted)
             CommentAndCloseOutdated(v2, telegramBotAbstract);
     }
 
@@ -58,9 +76,8 @@ public class Outdated
 
             if (i.State != ItemState.Open) return;
 
-
-            Comments.CreateComment(telegramBotAbstract, issueNumber, "Closed issue for inactivity.",
-                v2.GithubInfo);
+            const string msg = "Closed issue for inactivity.";
+            Comments.CreateComment(telegramBotAbstract, issueNumber, msg, v2.GithubInfo);
             var issueUpdate = new IssueUpdate { State = ItemState.Closed, StateReason = ItemStateReason.Completed };
             g.Issue.Update(owner, repo, issueNumber, issueUpdate);
         }
