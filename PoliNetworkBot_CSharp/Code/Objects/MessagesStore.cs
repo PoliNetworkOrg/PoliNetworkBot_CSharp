@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -233,7 +234,7 @@ public static class MessagesStore
         return null;
     }
 
-    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract.TelegramBotAbstract? sender,
+    internal static async Task SendMessageDetailsAsync(TelegramBotAbstract? sender,
         MessageEventArgs? e)
     {
         if (e?.Message.ReplyToMessage == null || string.IsNullOrEmpty(e.Message.ReplyToMessage.Text))
@@ -250,20 +251,18 @@ public static class MessagesStore
                     "en", "There are no messages"
                 }
             });
-            if (sender != null)
-            {
-                var messageOptions =
-                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
+            if (sender == null) return;
 
-                    {
-                        ChatId = e.Message.From?.Id,
-                        Text = language1,
-                        ChatType = ChatType.Private,
-                        Lang = e.Message.From?.LanguageCode,
-                        Username = e.Message.From?.Username
-                    };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions =
+                new MessageOptions
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = language1,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username
+                };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return;
         }
@@ -291,11 +290,10 @@ public static class MessagesStore
 
 
                 var messageOptions2 =
-                    new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
-
+                    new MessageOptions
                     {
-                        documentInput = tf,
-                        peer = peer,
+                        DocumentInput = tf,
+                        Peer = peer,
                         ChatId = peer.GetUserId(),
                         Username = e.Message.From?.Username,
                         Lang = e.Message.From?.LanguageCode,
@@ -387,7 +385,7 @@ public static class MessagesStore
     }
 
     public static async Task<CommandExecutionState> GetMessagesSent(MessageEventArgs? e,
-        TelegramBotAbstract.TelegramBotAbstract? sender)
+        TelegramBotAbstract? sender)
     {
         await SendMessageDetailsAsync(sender, e);
         return CommandExecutionState.SUCCESSFUL;

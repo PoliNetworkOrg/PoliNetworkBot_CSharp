@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
@@ -124,7 +124,7 @@ internal static class MainAnon
         });
         if (telegramBotAbstract != null)
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e?.Message.From?.Id,
@@ -233,7 +233,7 @@ internal static class MainAnon
 
             if (telegramBotAbstract != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e?.Message.From?.Id,
@@ -326,21 +326,20 @@ internal static class MainAnon
                 {
                     { "it", "L'identità non è stata riconosciuta. Operazione annullata" }
                 });
-                if (telegramBotAbstract != null)
-                {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
-                    {
-                        ChatId = m1.From?.Id,
-                        ParseMode = ParseMode.Html,
-                        Username = m1.From?.Username,
+                if (telegramBotAbstract == null) return;
 
-                        ChatType = ChatType.Private,
-                        Lang = m1.From?.LanguageCode,
-                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        Text = l3
-                    };
-                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                }
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = m1.From?.Id,
+                    ParseMode = ParseMode.Html,
+                    Username = m1.From?.Username,
+
+                    ChatType = ChatType.Private,
+                    Lang = m1.From?.LanguageCode,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = l3
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
 
                 return;
@@ -400,7 +399,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
                             ParseMode = ParseMode.Html,
@@ -448,7 +447,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
                             ParseMode = ParseMode.Html,
@@ -484,7 +483,7 @@ internal static class MainAnon
                     });
                     if (telegramBotAbstract != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
                         {
                             ChatId = dataAnon.AuthorId.Value,
                             ParseMode = ParseMode.Html,
@@ -567,20 +566,19 @@ internal static class MainAnon
                     }
                 });
 
-                if (telegramBotAbstract != null)
+                if (telegramBotAbstract == null) return false;
+
+                var messageOptions = new MessageOptions
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
-                    {
-                        ChatId = e.GetFromUserId(),
-                        ParseMode = ParseMode.Html,
-                        Username = e.GetUsername(),
-                        ChatType = ChatType.Private,
-                        Lang = e.GetLanguageCode(),
-                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        Text = l6
-                    };
-                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                }
+                    ChatId = e.GetFromUserId(),
+                    ParseMode = ParseMode.Html,
+                    Username = e.GetUsername(),
+                    ChatType = ChatType.Private,
+                    Lang = e.GetLanguageCode(),
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = l6
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
                 return false;
             }
@@ -591,7 +589,7 @@ internal static class MainAnon
                     var m5 = e.GetMessage();
                     if (m5 != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
                         {
                             ChatId = e.GetFromUserId(),
                             ParseMode = ParseMode.Html,
@@ -685,7 +683,7 @@ internal static class MainAnon
         if (telegramBotAbstract != null)
             if (m1 != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
                 {
                     ChatId = m1.From?.Id,
                     ParseMode = ParseMode.Html,
@@ -713,7 +711,7 @@ internal static class MainAnon
         var m1 = e?.Message;
         if (sender != null)
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
             {
                 ChatId = m1?.From?.Id,
                 ParseMode = ParseMode.Html,

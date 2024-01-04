@@ -9,8 +9,8 @@ using PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Utils;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Action;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using Telegram.Bot.Types;
@@ -61,7 +61,7 @@ public static class MessageHandler
                 Logger.WriteLine(e);
                 conversation.State = Data.Enums.ConversationState.START;
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = message.From.Id,
@@ -82,7 +82,7 @@ public static class MessageHandler
             var errorText = new L("it", "E' avvenuto un errore interno al bot, riprova più tardi",
                 "en", "An internal error occurred in the bot, try again later");
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From.Id,
@@ -117,7 +117,7 @@ public static class MessageHandler
 
                 replyLang = new L("it", "Seleziona un opzione valida", "en", "Select a valid option");
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = message.From.Id,
@@ -147,7 +147,7 @@ public static class MessageHandler
                 markupObject = ReplyMarkupGenerator.DateKeyboard();
                 replyLang = new L("it", "Seleziona una data", "en", "Select a date");
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = message.From.Id,
@@ -179,7 +179,7 @@ public static class MessageHandler
 
         conversation.State = Data.Enums.ConversationState.SELECT_CAMPUS;
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = message.From?.Id,
@@ -216,7 +216,7 @@ public static class MessageHandler
             markupObject = null;
             replyLang = new L("it", "Seleziona un'aula valida", "en", "Select a valid classroom");
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From?.Id,
@@ -239,7 +239,7 @@ public static class MessageHandler
         {
             replyLang = new L("it", "Errore interno", "en", "Internal error");
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From?.Id,
@@ -262,12 +262,12 @@ public static class MessageHandler
         conversation.State = Data.Enums.ConversationState.MAIN;
         conversation.ResetConversationFunctions();
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
-            documentInput = file,
+            DocumentInput = file,
             ChatId = peer.GetUserId(),
-            peer = peer,
+            Peer = peer,
             ChatType = ChatType.Private,
             Lang = message.From?.LanguageCode,
             ReplyMarkupObject = replyMarkup,
@@ -293,7 +293,7 @@ public static class MessageHandler
 
             replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From.Id,
@@ -311,7 +311,7 @@ public static class MessageHandler
         markupObject = ReplyMarkupGenerator.HourSelector(startHour, 20);
         replyLang = new L("it", "A che orario?", "en", "To what time?");
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
             ChatId = message.From.Id,
@@ -335,7 +335,7 @@ public static class MessageHandler
 
             var replyLang = new L("it", "Seleziona un numero valido", "en", "Select a valid number");
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From.Id,
@@ -374,7 +374,7 @@ public static class MessageHandler
             conversation.State = Data.Enums.ConversationState.MAIN;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = message.From?.Id,
@@ -402,7 +402,7 @@ public static class MessageHandler
         var replyMarkup = ReplyMarkupGenerator.MainKeyboard(message.From?.LanguageCode ?? "en");
 
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
             ChatId = message.From?.Id,
@@ -439,7 +439,7 @@ public static class MessageHandler
                 replyLang = new L("it", "Seleziona una data valida", "en", "Select a valid date");
 
 
-                var messageOptions2 = new TelegramBotAbstract.MessageOptions
+                var messageOptions2 = new MessageOptions
 
                 {
                     ChatId = message.From?.Id,
@@ -467,7 +467,7 @@ public static class MessageHandler
                 {
                     replyLang = new L("it", "Errore interno", "en", "Internal error");
 
-                    var messageOptions3 = new TelegramBotAbstract.MessageOptions
+                    var messageOptions3 = new MessageOptions
 
                     {
                         ChatId = message.From?.Id,
@@ -491,12 +491,12 @@ public static class MessageHandler
                 conversation.State = Data.Enums.ConversationState.MAIN;
 
 
-                var messageOptions2 = new TelegramBotAbstract.MessageOptions
+                var messageOptions2 = new MessageOptions
 
                 {
-                    documentInput = file,
+                    DocumentInput = file,
                     ChatId = peer.GetUserId(),
-                    peer = peer,
+                    Peer = peer,
                     ChatType = ChatType.Private,
                     Lang = message.From?.LanguageCode,
                     ReplyMarkupObject = replyMarkup,
@@ -537,7 +537,7 @@ public static class MessageHandler
         }
 
 
-        var messageOptions4 = new TelegramBotAbstract.MessageOptions
+        var messageOptions4 = new MessageOptions
 
         {
             ChatId = message.From?.Id,
@@ -564,7 +564,7 @@ public static class MessageHandler
 
             replyLang = new L("it", "Seleziona una sede valida", "en", "Select a valid campus");
 
-            var messageOptions4 = new TelegramBotAbstract.MessageOptions
+            var messageOptions4 = new MessageOptions
 
             {
                 ChatId = message.From?.Id,
@@ -601,7 +601,7 @@ public static class MessageHandler
 
         if (conversation.CallbackNextFunction is Data.Enums.Function.NULL_FUNCTION or Data.Enums.Function.SETTINGS)
         {
-            var messageOptions4 = new TelegramBotAbstract.MessageOptions
+            var messageOptions4 = new MessageOptions
 
             {
                 ChatId = message.From?.Id,
@@ -631,7 +631,7 @@ public static class MessageHandler
 
         conversation!.State = Data.Enums.ConversationState.MAIN;
 
-        var messageOptions4 = new TelegramBotAbstract.MessageOptions
+        var messageOptions4 = new MessageOptions
 
         {
             ChatId = message.From?.Id,

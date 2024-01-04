@@ -11,8 +11,8 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -37,20 +37,18 @@ public static class MassiveSendUtil
                     { "it", "You have to reply to a message containing the message" }
                 });
 
-                if (e?.Message != null)
-                {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                if (e?.Message == null) return false;
 
-                    {
-                        ChatId = e.Message.From?.Id,
-                        Text = text,
-                        ChatType = ChatType.Private,
-                        Lang = e.Message.From?.LanguageCode,
-                        Username = e.Message.From?.Username,
-                        ReplyToMessageId = e.Message.MessageId
-                    };
-                    await sender.SendTextMessageAsync(messageOptions);
-                }
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId
+                };
+                await sender.SendTextMessageAsync(messageOptions);
 
                 return false;
             }
@@ -84,20 +82,18 @@ public static class MassiveSendUtil
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
-            if (e?.Message.From != null)
-            {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+            if (e?.Message.From == null) return false;
 
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = new Language(dict),
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    Username = e.Message.From?.Username,
-                    ReplyToMessageId = e.Message.MessageId
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+            {
+                ChatId = e.Message.From?.Id,
+                Text = new Language(dict),
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = e.Message.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return false;
         }
@@ -141,7 +137,7 @@ public static class MassiveSendUtil
             return true;
 
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
             ChatId = e.Message.From?.Id,

@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 
-namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
 public class TelegramBotParam
 {

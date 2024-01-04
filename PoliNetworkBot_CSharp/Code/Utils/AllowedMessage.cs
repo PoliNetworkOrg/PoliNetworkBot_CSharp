@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Utils;
@@ -26,7 +26,7 @@ public static class AllowedMessage
             var message1 = e.Message;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatType = ChatType.Private,
@@ -52,7 +52,7 @@ public static class AllowedMessage
                 { "uni", m2 }
             });
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatType = ChatType.Private,
@@ -89,7 +89,7 @@ public static class AllowedMessage
             var o = e.Message;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatType = ChatType.Private,

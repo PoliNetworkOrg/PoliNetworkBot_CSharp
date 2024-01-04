@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Anon;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
@@ -31,7 +32,7 @@ public class TelegramFileContent
         _caption = caption;
     }
 
-    public List<MessageSentResult>? SendToOwners(TelegramBotAbstract.TelegramBotAbstract sender, string? langCode,
+    public List<MessageSentResult>? SendToOwners(TelegramBotAbstract sender, string? langCode,
         long? replyToMessageId2, EventArgsContainer? eventArgsContainer, FileTypeJsonEnum whatWeWant,
         LogFileInfo logFileInfo)
     {
@@ -43,7 +44,7 @@ public class TelegramFileContent
     }
 
     private List<MessageSentResult>? SendToOwnersEmpty(EventArgsContainer? eventArgsContainer,
-        TelegramBotAbstract.TelegramBotAbstract sender, string? langCode, long? replyToMessageId2,
+        TelegramBotAbstract sender, string? langCode, long? replyToMessageId2,
         FileTypeJsonEnum whatWeWant)
     {
         var text1 = new Language(new Dictionary<string, string?>
@@ -59,7 +60,7 @@ public class TelegramFileContent
     }
 
     private List<MessageSentResult>? SendToOwners2(EventArgsContainer? eventArgsContainer,
-        TelegramBotAbstract.TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant,
+        TelegramBotAbstract sender, long? replyToMessageId2, FileTypeJsonEnum whatWeWant,
         string? langCode,
         LogFileInfo logFileInfo)
     {
@@ -87,7 +88,7 @@ public class TelegramFileContent
         return null;
     }
 
-    public void SendToOwners3(EventArgsContainer? eventArgsContainer, TelegramBotAbstract.TelegramBotAbstract sender,
+    public void SendToOwners3(EventArgsContainer? eventArgsContainer, TelegramBotAbstract sender,
         LogFileInfo logFileInfo, long? replyToMessageId2, FileTypeJsonEnum whatWeWant)
     {
         try

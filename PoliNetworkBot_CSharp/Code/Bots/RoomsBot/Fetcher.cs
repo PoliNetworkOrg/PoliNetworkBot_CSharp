@@ -25,7 +25,7 @@ public static class Fetcher
     private static readonly Dictionary<string, Dictionary<DateTime, DateTime>> FetchCacheAge = new();
     private static readonly Dictionary<string, Dictionary<DateTime, HtmlDocument>> RawFetchedFile = new();
 
-    public static string? GetRawOccupancies(string campus, DateTime dateTime)
+    public static string GetRawOccupancies(string campus, DateTime dateTime)
     {
         var doc = FetchOccupationData(campus, dateTime);
         var parsedDoc = doc.DocumentNode.SelectNodes("//table[contains(@class, 'BoxInfoCard')]");

@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -75,7 +75,7 @@ internal class MessageAnonToSendInQueue
         if (telegramBotAbstract == null) return null;
 
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = ConfigAnon.ModAnonCheckGroup,

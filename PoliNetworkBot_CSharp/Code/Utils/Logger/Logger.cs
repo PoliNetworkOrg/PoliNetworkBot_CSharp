@@ -18,9 +18,9 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Log;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot.Types.Enums;
@@ -60,18 +60,17 @@ public static class Logger
                 {
                     { "un", escaped }
                 });
-                if (messageToBeSent.Key.Value != null)
-                {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
 
-                    {
-                        ChatId = messageToBeSent.Key.Key,
-                        Text = text,
-                        ChatType = messageToBeSent.ChatType,
-                        SplitMessage = true
-                    };
-                    await messageToBeSent.Key.Value.SendTextMessageAsync(messageOptions);
-                }
+                if (messageToBeSent.Key.Value == null) continue;
+
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = messageToBeSent.Key.Key,
+                    Text = text,
+                    ChatType = messageToBeSent.ChatType,
+                    SplitMessage = true
+                };
+                await messageToBeSent.Key.Value.SendTextMessageAsync(messageOptions);
             }
             catch (Exception e)
             {

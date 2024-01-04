@@ -26,8 +26,9 @@ using File = Telegram.Bot.Types.File;
 
 #endregion
 
-namespace PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
+[Serializable]
 public class TelegramBotAbstract
 {
     private readonly TelegramBotClient? _botClient;
@@ -637,74 +638,69 @@ public class TelegramBotAbstract
 
     internal long? GetId()
     {
-        switch (_isbot)
+        return _isbot switch
         {
-            case BotTypeApi.REAL_BOT:
-                return _botClient?.BotId;
-
-            case BotTypeApi.USER_BOT:
-                break;
-
-            case BotTypeApi.DISGUISED_BOT:
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return _id;
+            BotTypeApi.REAL_BOT => _botClient?.BotId,
+            BotTypeApi.USER_BOT => _id,
+            BotTypeApi.DISGUISED_BOT => _id,
+            BotTypeApi.UNKNOWN => _id,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
 
     /// <summary>
     ///     Send text message
     /// </summary>
-    /// <param name="chatid"></param>
-    /// <param name="text"></param>
-    /// <param name="chatType"></param>
-    /// <param name="lang"></param>
-    /// <param name="parseMode"></param>
-    /// <param name="replyMarkupObject"></param>
-    /// <param name="username"></param>
-    /// <param name="replyToMessageId"></param>
-    /// <param name="disablePreviewLink"></param>
-    /// <param name="splitMessage"></param>
+    /// <param name="messageOptions"></param>
+    /// Object with all the params inside
     /// <returns>MessageSentResult of the last message sent</returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     internal async Task<MessageSentResult?> SendTextMessageAsync(MessageOptions messageOptions)
     {
+        var message = messageOptions.Text?.Select(messageOptions.Lang);
+        if (_botClient == null) return null;
+        if (message == null) return null;
+
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
                 IReplyMarkup? reply = null;
                 if (messageOptions.ReplyMarkupObject != null)
                     reply = messageOptions.ReplyMarkupObject.GetReplyMarkupBot();
-                var m2 = messageOptions.ReplyToMessageId ?? 0;
-                var message = messageOptions.Text?.Select(messageOptions.Lang);
-                while (message != null && messageOptions.SplitMessage && message.Length > 4096)
+                var m2 = messageOptions.ReplyToMessageId;
+                var messageOptionsParseMode = messageOptions.ParseMode ?? ParseMode.Html;
+                var i = (int?)m2;
+
+                while (messageOptions.SplitMessage && message.Length > 4096)
                 {
                     if (messageOptions.ChatId != null)
                         if (_botClient != null)
                             await _botClient.SendTextMessageAsync(messageOptions.ChatId, message[..4095],
                                 messageOptions.MessageThreadId,
-                                messageOptions.ParseMode ?? ParseMode.Html,
-                                replyMarkup: reply, replyToMessageId: (int)m2,
+                                messageOptionsParseMode,
+                                replyMarkup: reply, replyToMessageId: i,
                                 disableWebPagePreview: messageOptions.DisablePreviewLink);
                     message = message[4095..];
                     Thread.Sleep(100);
                 }
 
-                if (_botClient != null)
-                    if (message != null)
-                        return messageOptions.ChatId != null
-                            ? new MessageSentResult(true, await _botClient.SendTextMessageAsync(messageOptions.ChatId,
-                                    message,
-                                    messageOptions.MessageThreadId, messageOptions.ParseMode ?? ParseMode.Html,
-                                    replyMarkup: reply, replyToMessageId: (int)m2,
-                                    disableWebPagePreview: messageOptions.DisablePreviewLink),
-                                messageOptions.ChatType)
-                            : null;
-                break;
+                if (_botClient == null) return null;
+                if (messageOptions.ChatId == null) return null;
+
+                var textMessageAsync = await _botClient.SendTextMessageAsync(
+                    messageOptions.ChatId,
+                    message,
+                    messageOptions.MessageThreadId,
+                    messageOptionsParseMode,
+                    replyMarkup: reply,
+                    replyToMessageId: i,
+                    disableWebPagePreview: messageOptions.DisablePreviewLink
+                );
+
+                var sendTextMessageAsync = new MessageSentResult(true, textMessageAsync,
+                    messageOptions.ChatType);
+                return sendTextMessageAsync;
 
 
             case BotTypeApi.USER_BOT:
@@ -733,8 +729,6 @@ public class TelegramBotAbstract
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        return null;
     }
 
     internal async Task<bool> SendMedia(GenericFile genericFile, long chatid, ChatType chatType, string? username,
@@ -1200,22 +1194,22 @@ public class TelegramBotAbstract
 
     internal bool SendFileAsync(MessageOptions messageOptions)
     {
-        if (messageOptions.documentInput == null)
+        if (messageOptions.DocumentInput == null)
             return false;
 
-        var textToSend = GetTextToSend(messageOptions.Lang, messageOptions.documentInput);
+        var textToSend = GetTextToSend(messageOptions.Lang, messageOptions.DocumentInput);
         IReplyMarkup? reply = null;
         if (messageOptions.ReplyMarkupObject != null) reply = messageOptions.ReplyMarkupObject.GetReplyMarkupBot();
         switch (_isbot)
         {
             case BotTypeApi.REAL_BOT:
             {
-                var inputOnlineFile = messageOptions.documentInput.GetOnlineFile();
+                var inputOnlineFile = messageOptions.DocumentInput.GetOnlineFile();
                 var userId = messageOptions.ChatId;
                 if (userId == null)
                     return false;
 
-                switch (messageOptions.documentInput.TextAsCaption)
+                switch (messageOptions.DocumentInput.TextAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
@@ -1269,20 +1263,20 @@ public class TelegramBotAbstract
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(messageOptions.documentInput.TextAsCaption),
-                            messageOptions.documentInput.TextAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(messageOptions.DocumentInput.TextAsCaption),
+                            messageOptions.DocumentInput.TextAsCaption, null);
                 }
             }
 
             case BotTypeApi.USER_BOT:
-                switch (messageOptions.documentInput.TextAsCaption)
+                switch (messageOptions.DocumentInput.TextAsCaption)
                 {
                     case TextAsCaption.AS_CAPTION:
                     {
-                        var tlFileToSend = messageOptions.documentInput.GetMediaTl(UserbotClient).Result;
+                        var tlFileToSend = messageOptions.DocumentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r = tlFileToSend.SendMedia(messageOptions.peer?.GetPeer(),
+                            var r = tlFileToSend.SendMedia(messageOptions.Peer?.GetPeer(),
                                 UserbotClient, textToSend, messageOptions.Username).Result;
                             return r != null;
                         }
@@ -1292,15 +1286,15 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.BEFORE_FILE:
                     {
-                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, messageOptions.peer?.GetPeer(),
+                        var r2 = SendMessage.SendMessageUserBot(UserbotClient, messageOptions.Peer?.GetPeer(),
                             new L(textToSend),
                             messageOptions.Username,
                             new TLReplyKeyboardHide(), messageOptions.Lang, messageOptions.ReplyToMessageId,
                             messageOptions.DisablePreviewLink).Result;
-                        var tlFileToSend = messageOptions.documentInput.GetMediaTl(UserbotClient).Result;
+                        var tlFileToSend = messageOptions.DocumentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r = tlFileToSend.SendMedia(messageOptions.peer?.GetPeer(), UserbotClient, null,
+                            var r = tlFileToSend.SendMedia(messageOptions.Peer?.GetPeer(), UserbotClient, null,
                                 messageOptions.Username, messageOptions.Lang).Result;
                             return r != null && r2 != null;
                         }
@@ -1310,12 +1304,12 @@ public class TelegramBotAbstract
 
                     case TextAsCaption.AFTER_FILE:
                     {
-                        var tlFileToSend = messageOptions.documentInput.GetMediaTl(UserbotClient).Result;
+                        var tlFileToSend = messageOptions.DocumentInput.GetMediaTl(UserbotClient).Result;
                         if (tlFileToSend != null)
                         {
-                            var r = tlFileToSend.SendMedia(messageOptions.peer?.GetPeer(), UserbotClient,
+                            var r = tlFileToSend.SendMedia(messageOptions.Peer?.GetPeer(), UserbotClient,
                                 null, messageOptions.Username, messageOptions.Lang).Result;
-                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, messageOptions.peer?.GetPeer(),
+                            var r2 = SendMessage.SendMessageUserBot(UserbotClient, messageOptions.Peer?.GetPeer(),
                                 new L(textToSend),
                                 messageOptions.Username,
                                 new TLReplyKeyboardHide(), messageOptions.Lang, messageOptions.ReplyToMessageId,
@@ -1327,8 +1321,8 @@ public class TelegramBotAbstract
                     }
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(messageOptions.documentInput.TextAsCaption),
-                            messageOptions.documentInput.TextAsCaption, null);
+                        throw new ArgumentOutOfRangeException(nameof(messageOptions.DocumentInput.TextAsCaption),
+                            messageOptions.DocumentInput.TextAsCaption, null);
                 }
 
                 break;
@@ -1891,22 +1885,5 @@ public class TelegramBotAbstract
             case BotTypeApi.DISGUISED_BOT:
                 break;
         }
-    }
-
-    public class MessageOptions
-    {
-        public TelegramFile? documentInput;
-        public PeerAbstract? peer;
-        public long? ChatId { get; set; }
-        public Language? Text { get; set; }
-        public ChatType? ChatType { get; set; }
-        public string? Lang { get; set; }
-        public ParseMode? ParseMode { get; set; }
-        public ReplyMarkupObject? ReplyMarkupObject { get; set; }
-        public string? Username { get; set; }
-        public long? ReplyToMessageId { get; set; }
-        public bool DisablePreviewLink { get; set; }
-        public bool SplitMessage { get; set; } = false;
-        public int? MessageThreadId { get; set; }
     }
 }

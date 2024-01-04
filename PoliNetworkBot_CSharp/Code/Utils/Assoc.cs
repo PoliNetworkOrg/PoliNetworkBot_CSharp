@@ -10,8 +10,8 @@ using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.CallbackUtils;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -99,7 +99,7 @@ public static class Assoc
 
                 if (sender != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.From?.Id,
@@ -162,7 +162,7 @@ public static class Assoc
                         });
                         if (sender != null)
                         {
-                            var messageOptions = new TelegramBotAbstract.MessageOptions
+                            var messageOptions = new MessageOptions
 
                             {
                                 ChatId = e.Message.From?.Id,
@@ -230,7 +230,7 @@ public static class Assoc
             if (sender == null) return true;
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -277,7 +277,7 @@ public static class Assoc
         if (sender != null)
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -376,7 +376,7 @@ public static class Assoc
             if (e == null) return r;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e.Message.From?.Id,
@@ -400,7 +400,7 @@ public static class Assoc
 
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -476,7 +476,7 @@ public static class Assoc
         if (sender != null)
             if (e?.Message.From != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -764,7 +764,7 @@ public static class Assoc
 
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = eventArgs?.Message.From?.Id,
@@ -827,10 +827,9 @@ public static class Assoc
                     });
 
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
-
                     ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
 
                     Text = language,
@@ -856,7 +855,7 @@ public static class Assoc
         var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs,
             permittedSpamMessage);
 
-        await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
+        awaitCallbackUtils.CallbackUtilss.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato.FullLong(),
             councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
@@ -926,7 +925,7 @@ public static class Assoc
 
                     if (callbackGenericData.Bot != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
 
                         {
                             ChatId = assocVetoData.MessageEventArgs?.Message.From?.Id,
@@ -958,4 +957,3 @@ public static class Assoc
             // ignored
         }
     }
-}

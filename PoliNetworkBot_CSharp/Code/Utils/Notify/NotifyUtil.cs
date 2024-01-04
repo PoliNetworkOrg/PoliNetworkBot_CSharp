@@ -13,11 +13,11 @@ using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.BanUnban;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Objects.Files;
 using PoliNetworkBot_CSharp.Code.Objects.Log;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using Telegram.Bot.Types.Enums;
 
@@ -550,7 +550,7 @@ internal static class NotifyUtil
         return message;
     }
 
-    public static string CreatePermittedSpamMessage(EventArgsContainer? messageEventArgs,
+    private static string CreatePermittedSpamMessage(EventArgsContainer? messageEventArgs,
         string? text, string? groups, string? messageType, string? assoc)
     {
         var hashAssoc = HashUtils.GetHashOf(assoc)?[..8];
@@ -655,12 +655,12 @@ internal static class NotifyUtil
             TelegramFile.FromString(sTosend, "report_execution.json", language, TextAsCaption.AS_CAPTION);
         var peer = new PeerAbstract(toSendUser, ChatType.Private);
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
         {
             ChatId = peer.GetUserId(),
-            peer = peer,
+            Peer = peer,
 
-            documentInput = documentInput,
+            DocumentInput = documentInput,
             DisablePreviewLink = false
         };
         var r2 = telegramBotAbstract.SendFileAsync(messageOptions);

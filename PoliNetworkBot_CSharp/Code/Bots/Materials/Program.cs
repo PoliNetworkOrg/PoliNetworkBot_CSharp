@@ -17,8 +17,8 @@ using PoliNetworkBot_CSharp.Code.Bots.Materials.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using Telegram.Bot;
@@ -98,7 +98,7 @@ public class Program
                     {
                         if (telegramBotClient == null) return;
 
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
 
                         {
                             ChatId = e?.Message.Chat.Id,
@@ -300,19 +300,17 @@ public class Program
             };
             var text = new Language(dict);
 
-            if (sender != null)
-            {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+            if (sender == null) return;
 
-                {
-                    ChatId = LogGroup,
-                    Text = text,
-                    ChatType = ChatType.Group,
-                    Lang = "uni",
-                    ParseMode = ParseMode.Html
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+            {
+                ChatId = LogGroup,
+                Text = text,
+                ChatType = ChatType.Group,
+                Lang = "uni",
+                ParseMode = ParseMode.Html
+            };
+            await sender.SendTextMessageAsync(messageOptions);
         }
         catch (Exception ex)
         {
@@ -431,7 +429,7 @@ public class Program
 
 
                                 var messageOptions =
-                                    new TelegramBotAbstract.MessageOptions
+                                    new MessageOptions
 
                                     {
                                         ChatId = chatIdTo,
@@ -482,7 +480,7 @@ public class Program
 
 
                                     var messageOptions =
-                                        new TelegramBotAbstract.MessageOptions
+                                        new MessageOptions
 
                                         {
                                             ChatId = fromId,
@@ -529,7 +527,7 @@ public class Program
 
 
                                     var messageOptions =
-                                        new TelegramBotAbstract.MessageOptions
+                                        new MessageOptions
 
                                         {
                                             ChatId = fromId,
@@ -574,7 +572,7 @@ public class Program
 
 
                                 var messageOptions =
-                                    new TelegramBotAbstract.MessageOptions
+                                    new MessageOptions
 
                                     {
                                         ChatId = fromId,
@@ -597,7 +595,7 @@ public class Program
                             if (sender != null)
                             {
                                 var messageOptions =
-                                    new TelegramBotAbstract.MessageOptions
+                                    new MessageOptions
 
                                     {
                                         ChatId = fromId,
@@ -677,19 +675,18 @@ public class Program
                 { "it", "Le immagini sono accettate solo se inviate senza compressione" }
             };
             var text = new Language(dict);
-            if (telegramBotAbstract != null)
-            {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+            if (telegramBotAbstract == null) return;
 
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = text,
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    ParseMode = ParseMode.Html
-                };
-                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+
+            {
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                ParseMode = ParseMode.Html
+            };
+            await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
             return;
         }
@@ -705,7 +702,7 @@ public class Program
             if (telegramBotAbstract == null) return;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e?.Message.From?.Id,
@@ -760,7 +757,7 @@ public class Program
 
                 if (telegramBotAbstract != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -794,7 +791,7 @@ public class Program
 
                         var messageId = messageFw?.GetMessageId();
 
-                        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+                        var messageOptions2 = new MessageOptions
 
                         {
                             ChatId = idChatMessageTo,
@@ -862,7 +859,7 @@ public class Program
             if (sender == null) return;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e.Message.Chat.Id,
@@ -896,7 +893,7 @@ public class Program
 
                 if (sender != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -930,7 +927,7 @@ public class Program
 
                 if (sender != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -978,7 +975,7 @@ public class Program
 
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.Chat.Id,
@@ -1014,7 +1011,7 @@ public class Program
                 );
                 if (telegramBotAbstract != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -1060,7 +1057,7 @@ public class Program
                     var text = new Language(dict);
                     if (sender != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
 
                         {
                             ChatId = e.Message.Chat.Id,
@@ -1094,7 +1091,7 @@ public class Program
                 var text = new Language(dict);
                 if (sender != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -1142,7 +1139,7 @@ public class Program
                 );
                 if (telegramBotAbstract != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,
@@ -1175,7 +1172,7 @@ public class Program
             if (telegramBotAbstract == null) return;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e.Message.Chat.Id,
@@ -1212,7 +1209,7 @@ public class Program
                 var text1 = new Language(dict1);
                 if (telegramBotAbstract != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.Chat.Id,

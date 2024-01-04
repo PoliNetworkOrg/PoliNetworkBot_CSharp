@@ -11,8 +11,8 @@ using PoliNetworkBot_CSharp.Code.Bots.Moderation;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Enums.Action;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Objects.TelegramMedia;
 using PoliNetworkBot_CSharp.Code.Utils.DatabaseUtils;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
@@ -206,7 +206,7 @@ internal static class InviteLinks
                                     });
 
                                 var messageOptions =
-                                    new TelegramBotAbstract.MessageOptions
+                                    new MessageOptions
 
                                     {
                                         ChatId = e.Message.From.Id,
@@ -237,7 +237,7 @@ internal static class InviteLinks
 
 
                         var messageOptions2 =
-                            new TelegramBotAbstract.MessageOptions
+                            new MessageOptions
 
                             {
                                 ChatId = e.Message.From.Id,
@@ -257,11 +257,11 @@ internal static class InviteLinks
 
 
                         var messageOptions3 =
-                            new TelegramBotAbstract.MessageOptions
+                            new MessageOptions
 
                             {
-                                documentInput = tf,
-                                peer = peerAbstract,
+                                DocumentInput = tf,
+                                Peer = peerAbstract,
 
                                 ChatId = peerAbstract.GetUserId(),
 
@@ -334,7 +334,7 @@ internal static class InviteLinks
                                 });
 
 
-                            var messageOptions = new TelegramBotAbstract.MessageOptions
+                            var messageOptions = new MessageOptions
 
                             {
                                 ChatId = e.Message.From?.Id,
@@ -391,7 +391,7 @@ internal static class InviteLinks
                                 });
 
 
-                            var messageOptions = new TelegramBotAbstract.MessageOptions
+                            var messageOptions = new MessageOptions
 
                             {
                                 ChatId = e.Message.From?.Id,
@@ -442,7 +442,7 @@ internal static class InviteLinks
                                     }
                                 });
 
-                            var messageOptions = new TelegramBotAbstract.MessageOptions
+                            var messageOptions = new MessageOptions
 
                             {
                                 ChatId = e.Message.From?.Id,

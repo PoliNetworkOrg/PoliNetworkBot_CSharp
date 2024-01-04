@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 
-public class Enums
+public static class Enums
 {
     public enum ConversationState
     {

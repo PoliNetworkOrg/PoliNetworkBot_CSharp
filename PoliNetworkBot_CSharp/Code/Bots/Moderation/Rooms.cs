@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 using PoliNetworkBot_CSharp.Code.Utils.UtilsMedia;
@@ -604,13 +604,13 @@ internal static class Rooms
                     message, TextAsCaption.AS_CAPTION, "text/html");
 
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
-                    documentInput = document,
+                    DocumentInput = document,
                     DisablePreviewLink = true,
                     Username = e?.Message.From?.Username,
-                    peer = peer,
+                    Peer = peer,
                     Lang = e?.Message.From?.LanguageCode
                 };
                 sender?.SendFileAsync(messageOptions);

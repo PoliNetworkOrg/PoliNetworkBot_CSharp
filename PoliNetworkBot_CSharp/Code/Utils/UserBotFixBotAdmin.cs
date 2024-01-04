@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
-using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
+using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.TmpResults;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
 using TeleSharp.TL;
