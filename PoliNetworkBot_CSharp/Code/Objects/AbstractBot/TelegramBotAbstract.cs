@@ -28,6 +28,7 @@ using File = Telegram.Bot.Types.File;
 
 namespace PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
+[Serializable]
 public class TelegramBotAbstract
 {
     private readonly TelegramBotClient? _botClient;
