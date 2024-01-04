@@ -10,10 +10,9 @@ public class MessageThread
 {
     public long? ChatId;
     public List<MessageThread>? Children;
-<<<<<<< HEAD
+
     public GithubInfo? GithubInfo;
-=======
->>>>>>> master
+
     public int? IssueNumber;
     public int? MessageId;
 }
