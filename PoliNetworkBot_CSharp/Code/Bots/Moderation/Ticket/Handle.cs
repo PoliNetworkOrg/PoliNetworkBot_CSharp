@@ -4,6 +4,7 @@ using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
+using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
@@ -18,7 +19,6 @@ public static class Handle
     private const int MaxLengthTitleIssue = 200;
     private const int MaxTimeThreadInRamDays = 3;
 
-    private static readonly Dictionary<DateTime, List<MessageThread>> Threads = new();
 
     public static void HandleTicketMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
@@ -83,11 +83,12 @@ public static class Handle
 
     private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
     {
-        lock (Threads)
+        GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+        lock (GlobalVariables.Threads)
         {
-            foreach (var key in Threads.Keys)
+            foreach (var key in GlobalVariables.Threads.Keys)
             {
-                var startMessage2 = Threads[key];
+                var startMessage2 = GlobalVariables.Threads[key];
                 foreach (var startMessage in startMessage2)
                 {
                     startMessage.Children ??= new List<MessageThread>();
@@ -122,12 +123,15 @@ public static class Handle
 
     private static void HandleRemoveOutdatedThreadsFromRam()
     {
-        lock (Threads)
+        GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+
+        lock (GlobalVariables.Threads)
         {
-            var dateTimes = Threads.Keys.Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
+            var dateTimes = GlobalVariables.Threads.Keys
+                .Where(variable => variable.AddDays(MaxTimeThreadInRamDays) < DateTime.Now)
                 .ToList();
 
-            foreach (var variable in dateTimes) Threads.Remove(variable);
+            foreach (var variable in dateTimes) GlobalVariables.Threads.Remove(variable);
         }
     }
 
@@ -158,13 +162,15 @@ public static class Handle
                 IssueNumber = issue.Number
             };
 
-            lock (Threads)
+            GlobalVariables.Threads ??= new Dictionary<DateTime, List<MessageThread>>();
+
+            lock (GlobalVariables.Threads)
             {
                 var dateTime = DateTime.Now;
-                if (!Threads.ContainsKey(dateTime))
-                    Threads[dateTime] = new List<MessageThread>();
+                if (!GlobalVariables.Threads.ContainsKey(dateTime))
+                    GlobalVariables.Threads[dateTime] = new List<MessageThread>();
 
-                Threads[dateTime].Add(messageThread);
+                GlobalVariables.Threads[dateTime].Add(messageThread);
             }
         }
         catch (Exception ex)
