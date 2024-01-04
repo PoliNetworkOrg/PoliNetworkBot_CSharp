@@ -33,8 +33,7 @@ public static class MainClass
     {
         if (sender == null || e == null) return;
         var telegramBotParam = new TelegramBotParam(sender, false);
-        var x = MainMethod2(telegramBotParam, e);
-        x.Wait();
+        var x = MainMethod2(telegramBotParam, e).Result;
     }
 
     public static async Task<ActionDoneObject> MainMethod2(TelegramBotParam sender, MessageEventArgs? e)

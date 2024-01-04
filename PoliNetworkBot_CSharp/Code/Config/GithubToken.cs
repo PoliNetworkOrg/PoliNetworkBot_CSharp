@@ -27,7 +27,7 @@ public static class GithubToken
         arg2.BotInfoAbstract ??= new BotInfoAbstract();
         arg2.BotInfoAbstract.GithubToken = githubToken;
 
-        var messageOptions = new MessageOptions()
+        var messageOptions = new MessageOptions
         {
             ChatId = arg1?.Message.From?.Id,
             Text = new L("Github token settato con successo.")
