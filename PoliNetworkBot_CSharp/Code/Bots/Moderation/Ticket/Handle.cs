@@ -83,27 +83,29 @@ public static class Handle
     {
         lock (Threads)
         {
-            foreach (var variable in Threads)
+            foreach (var startMessage in Threads)
             {
-                variable.Children ??= new List<MessageThread>();
+                startMessage.Children ??= new List<MessageThread>();
 
                 var messageId = messageReplyToMessage.MessageId;
                 var chatId = messageReplyToMessage.Chat.Id;
 
-                if (variable.MessageId == messageId &&
-                    variable.ChatId == chatId)
+                var variableChildren = startMessage.Children;
+
+                if (startMessage.MessageId == messageId &&
+                    startMessage.ChatId == chatId)
                 {
-                    variable.Children.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
-                    return variable;
+                    variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+                    return startMessage;
                 }
 
 
-                foreach (var variable2 in variable.Children)
-                    if (variable2.MessageId == messageId &&
-                        variable2.ChatId == chatId)
+                foreach (var childMessage in variableChildren)
+                    if (childMessage.MessageId == messageId &&
+                        childMessage.ChatId == chatId)
                     {
-                        variable.Children.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
-                        return variable2;
+                        variableChildren.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
+                        return childMessage;
                     }
             }
         }
