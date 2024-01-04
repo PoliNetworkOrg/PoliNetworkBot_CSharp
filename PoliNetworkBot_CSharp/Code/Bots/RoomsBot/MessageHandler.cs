@@ -459,7 +459,7 @@ public static class MessageHandler
             case Data.Enums.Function.OCCUPANCIES:
                 conversation.ResetConversationFunctions();
                 conversation.State = Data.Enums.ConversationState.START;
-                string fileString = Fetcher.GetRawOccupancies(conversation.Campus!, date);
+                var fileString = Fetcher.GetRawOccupancies(conversation.Campus!, date);
                 replyLang = new L("it", "", "en", "");
 
                 var encoding = Encoding.UTF8;
