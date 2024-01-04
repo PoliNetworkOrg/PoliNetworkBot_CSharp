@@ -830,8 +830,7 @@ public static class Assoc
                 var messageOptions = new MessageOptions
 
                 {
-
-                    ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
+                     ChatId = GroupsConstants.PermittedSpamGroup.FullLong(),
 
                     Text = language,
                     Lang = "en",
@@ -856,7 +855,7 @@ public static class Assoc
         var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs,
             permittedSpamMessage);
 
-        await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
+        awaitCallbackUtils.CallbackUtilss.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato.FullLong(),
             councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
@@ -957,5 +956,6 @@ public static class Assoc
         {
             // ignored
         }
-    }
+    
+
 }

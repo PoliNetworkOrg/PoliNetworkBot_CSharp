@@ -135,7 +135,7 @@ internal static class CommandDispatcher
                             sender, e);
 
                         return false;
-                    
+
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.NOT_TRIGGERED:
                         // do nothing, this is normal as NotTriggered simply means that preconditions were false.
