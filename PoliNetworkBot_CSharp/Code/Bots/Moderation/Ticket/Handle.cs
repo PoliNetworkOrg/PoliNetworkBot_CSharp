@@ -47,10 +47,7 @@ public static class Handle
     {
         var messageThread = FindOrigin(messageReplyToMessage);
 
-        if (messageThread == null)
-        {
-            return;
-        }
+        if (messageThread == null) return;
 
 
         HandleWriteComment(telegramBotAbstract, messageEventArgs, messageThread);
@@ -96,20 +93,18 @@ public static class Handle
                 if (variable.MessageId == messageId &&
                     variable.ChatId == chatId)
                 {
-                    variable.Children.Add(new MessageThread() { MessageId = messageId, ChatId = chatId });
+                    variable.Children.Add(new MessageThread { MessageId = messageId, ChatId = chatId });
                     return variable;
                 }
 
 
                 foreach (var variable2 in variable.Children)
-                {
                     if (variable2.MessageId == messageId &&
                         variable2.ChatId == chatId)
                     {
-                        variable.Children.Add(new MessageThread() { MessageId = messageId, ChatId = chatId });
+                        variable.Children.Add(new MessageThread { MessageId = messageId, ChatId = chatId });
                         return variable2;
                     }
-                }
             }
         }
 
@@ -179,8 +174,13 @@ public static class Handle
         return date;
     }
 
-    private static ChatIdTgWith100? AllowedGroupsContains(long chatId) =>
-        DataTicketClass.AllowedGroups.FirstOrDefault(a => ChatIdTgWith100Equales(a, chatId));
+    private static ChatIdTgWith100? AllowedGroupsContains(long chatId)
+    {
+        return DataTicketClass.AllowedGroups.FirstOrDefault(a => ChatIdTgWith100Equales(a, chatId));
+    }
 
-    private static bool ChatIdTgWith100Equales(ChatIdTgWith100 a, long b) => a.GetString() == b.ToString();
+    private static bool ChatIdTgWith100Equales(ChatIdTgWith100 a, long b)
+    {
+        return a.GetString() == b.ToString();
+    }
 }

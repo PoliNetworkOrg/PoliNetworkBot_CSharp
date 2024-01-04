@@ -11,6 +11,10 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 
 public static class DataTicketClass
 {
+    private const string NameUserAgent = "PoliNetwork-Ticket";
+    public const string OwnerRepo = "PoliNetworkOrg";
+    public const string NameRepo = "testIssue";
+
     public static readonly List<ChatIdTgWith100>
         AllowedGroups = new()
         {
@@ -18,10 +22,6 @@ public static class DataTicketClass
             GroupsConstants.PianoDiStudi,
             GroupsConstants.Dsu
         };
-    
-    private const string NameUserAgent = "PoliNetwork-Ticket";
-    public const string OwnerRepo = "PoliNetworkOrg";
-    public const string NameRepo = "testIssue";
 
     private static HttpClient? _httpClient;
     private static GitHubClient? _gitHubClient;

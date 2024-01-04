@@ -8,7 +8,8 @@ public static class GetIssues
 {
     public static IReadOnlyList<Issue> GetIssuesMethod(GitHubClient client)
     {
-        var issuesForOctokit = client.Issue.GetAllForRepository(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo).Result;
+        var issuesForOctokit = client.Issue.GetAllForRepository(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo)
+            .Result;
         return issuesForOctokit;
     }
 }
