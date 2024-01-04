@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
@@ -17,5 +19,24 @@ public static class Comments
         var responseBody = r.Content.ReadAsStringAsync().Result;
         var jArray = (JArray?)JsonConvert.DeserializeObject(responseBody);
         return jArray;
+    }
+
+    public static void CreateComment(TelegramBotAbstract telegramBotAbstract, int issueNumber, string body)
+    {
+        //https://docs.github.com/en/rest/issues/comments?apiVersion=2022-11-28#create-an-issue-comment
+        var client = DataTicketClass.GetHttpClient(telegramBotAbstract);
+        JObject jObject = new JObject
+        {
+            ["body"] = body
+        };
+        var serializeObject = JsonConvert.SerializeObject(jObject);
+        const string applicationJson = "application/json";
+        StringContent content = new StringContent(serializeObject, Encoding.UTF8, applicationJson);
+
+        var uri =
+            $"https://api.github.com/repos/{DataTicketClass.OwnerRepo}/{DataTicketClass.NameRepo}/issues/{issueNumber}/comments";
+
+        client.PostAsync(requestUri: uri,
+            content: content);
     }
 }
