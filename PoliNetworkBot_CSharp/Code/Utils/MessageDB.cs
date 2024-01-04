@@ -323,7 +323,7 @@ public static class MessageDb
         return new HasBeenSent(null, 3, s3);
     }
 
-    private static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
+    public static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract? telegramBotAbstract, int count)
     {
         var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract);

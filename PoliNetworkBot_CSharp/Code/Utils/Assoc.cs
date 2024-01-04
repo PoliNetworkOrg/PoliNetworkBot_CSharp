@@ -29,7 +29,10 @@ public static class Assoc
         TelegramBotAbstract? sender, string? lang, string? username)
     {
         const string? q =
-            "SELECT Entities.id, Entities.name FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities WHERE T1.id_entity = Entities.id";
+            "SELECT Entities.id, Entities.name " +
+            "FROM (SELECT * FROM PeopleInEntities WHERE id_person = @idp) AS T1, Entities " +
+            "WHERE T1.id_entity = Entities.id";
+
         var r = Database.ExecuteSelect(q, sender?.DbConfig,
             new Dictionary<string, object?> { { "@idp", id } });
         if (r == null || r.Rows.Count == 0) return null;
@@ -546,7 +549,7 @@ public static class Assoc
         return null;
     }
 
-    private static async Task<MessageSentResult?> SendMessageAssocToUserAsync(DataRow? m, TelegramBotAbstract? sender,
+    public static async Task<MessageSentResult?> SendMessageAssocToUserAsync(DataRow? m, TelegramBotAbstract? sender,
         MessageEventArgs? e, bool extraInfo, int count)
     {
         return m == null
@@ -855,7 +858,7 @@ public static class Assoc
         var assocVetoData = new CallbackAssocVetoData(options, VetoCallbackButton, message, messageEventArgs,
             permittedSpamMessage);
 
-        awaitCallbackUtils.CallbackUtilss.SendMessageWithCallbackQueryAsync(assocVetoData,
+        await CallbackUtils.CallbackUtils.SendMessageWithCallbackQueryAsync(assocVetoData,
             GroupsConstants.ConsiglioDegliAdminRiservato.FullLong(),
             councilMessage, sender, ChatType.Group, "uni", null, true, replyTo);
 
