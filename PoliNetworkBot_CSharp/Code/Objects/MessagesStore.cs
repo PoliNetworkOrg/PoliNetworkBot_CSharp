@@ -251,20 +251,18 @@ public static class MessagesStore
                     "en", "There are no messages"
                 }
             });
-            if (sender != null)
-            {
-                var messageOptions =
-                    new TelegramBotAbstract.MessageOptions
+            if (sender == null) return;
 
-                    {
-                        ChatId = e.Message.From?.Id,
-                        Text = language1,
-                        ChatType = ChatType.Private,
-                        Lang = e.Message.From?.LanguageCode,
-                        Username = e.Message.From?.Username
-                    };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions =
+                new MessageOptions
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = language1,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username
+                };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return;
         }

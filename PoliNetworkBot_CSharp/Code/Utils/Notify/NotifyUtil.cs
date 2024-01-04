@@ -550,7 +550,7 @@ internal static class NotifyUtil
         return message;
     }
 
-    public static string CreatePermittedSpamMessage(EventArgsContainer? messageEventArgs,
+    private static string CreatePermittedSpamMessage(EventArgsContainer? messageEventArgs,
         string? text, string? groups, string? messageType, string? assoc)
     {
         var hashAssoc = HashUtils.GetHashOf(assoc)?[..8];

@@ -323,7 +323,7 @@ public static class MessageDb
         return new HasBeenSent(null, 3, s3);
     }
 
-    public static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
+    private static async Task<MessageSentResult?> SendMessageFromDataRow(DataRow dr, long? chatIdToSendTo,
         ChatType? chatTypeToSendTo, bool extraInfo, TelegramBotAbstract? telegramBotAbstract, int count)
     {
         var r1 = await SendMessageFromDataRowSingle(dr, chatIdToSendTo, chatTypeToSendTo, telegramBotAbstract);
@@ -391,21 +391,16 @@ public static class MessageDb
             { "en", text1 }
         };
         var text2 = new Language(dict);
-        if (telegramBotAbstract != null)
+        if (telegramBotAbstract == null) return null;
+        var messageOptions = new MessageOptions
         {
-            var messageOptions = new MessageOptions
-
-            {
-                ChatId = chatIdToSendTo.Value,
-                Text = text2,
-                ChatType = chatTypeToSendTo,
-                ReplyToMessageId = r1.GetMessageId(),
-                DisablePreviewLink = true
-            };
-            return await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-        }
-
-        return null;
+            ChatId = chatIdToSendTo.Value,
+            Text = text2,
+            ChatType = chatTypeToSendTo,
+            ReplyToMessageId = r1.GetMessageId(),
+            DisablePreviewLink = true
+        };
+        return await telegramBotAbstract.SendTextMessageAsync(messageOptions);
     }
 
     private static async Task<MessageSentResult?> SendMessageFromDataRowSingle(DataRow dr, long? chatIdToSendTo,

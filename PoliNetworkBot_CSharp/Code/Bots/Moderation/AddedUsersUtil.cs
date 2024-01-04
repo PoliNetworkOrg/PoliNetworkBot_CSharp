@@ -26,7 +26,7 @@ public static class AddedUsersUtil
                 return;
 
             var chatId = messageEventArgs.Message.Chat.Id;
-            if (Groups.PianoDiStudi.Equals(chatId))
+            if (Groups.PianoDiStudi.FullLong().Equals(chatId))
                 await RestrictUser.TryMuteUsers(telegramBotClient, messageEventArgs, added,
                     TimeSpan.FromMinutes(5));
         }

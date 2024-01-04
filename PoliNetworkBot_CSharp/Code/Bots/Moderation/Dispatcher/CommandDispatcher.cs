@@ -123,21 +123,19 @@ internal static class CommandDispatcher
                         return false;
                     case CommandExecutionState.INSUFFICIENT_PERMISSIONS:
                     case CommandExecutionState.ERROR_DEFAULT:
-                        if (e.Message.Chat.Type == ChatType.Private)
-                        {
-                            var errorDescription = execState.ToString();
+                        if (e.Message.Chat.Type != ChatType.Private) return false;
 
-
-                            await NotifyUserCommandError(new L(
-                                    "it",
-                                    $"<b>Errore:</b> {errorDescription}.",
-                                    "en",
-                                    $"<b>Error:</b> {errorDescription}."
-                                ),
-                                sender, e);
-                        }
+                        var errorDescription = execState.ToString();
+                        await NotifyUserCommandError(new L(
+                                "it",
+                                $"<b>Errore:</b> {errorDescription}.",
+                                "en",
+                                $"<b>Error:</b> {errorDescription}."
+                            ),
+                            sender, e);
 
                         return false;
+                    
                     case CommandExecutionState.ERROR_NOT_ENABLED:
                     case CommandExecutionState.NOT_TRIGGERED:
                         // do nothing, this is normal as NotTriggered simply means that preconditions were false.
@@ -158,24 +156,20 @@ internal static class CommandDispatcher
     private static async Task<MessageSentResult?> NotifyUserCommandError(Language message, TelegramBotAbstract sender,
         MessageEventArgs? e)
     {
-        if (e != null)
+        if (e == null) return null;
+
+        var messageOptions = new MessageOptions
         {
-            var messageOptions = new MessageOptions
+            ChatId = e.Message.From?.Id,
+            Text = message,
+            ChatType = ChatType.Private,
+            Lang = e.Message.From?.LanguageCode,
+            Username = e.Message.From?.Username,
 
-            {
-                ChatId = e.Message.From?.Id,
-                Text = message,
-                ChatType = ChatType.Private,
-                Lang = e.Message.From?.LanguageCode,
-                Username = e.Message.From?.Username,
-
-                ReplyToMessageId = e.Message.MessageId
-            };
-            var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
-            return sendTextMessageAsync;
-        }
-
-        return null;
+            ReplyToMessageId = e.Message.MessageId
+        };
+        var sendTextMessageAsync = await sender.SendTextMessageAsync(messageOptions);
+        return sendTextMessageAsync;
     }
 
 
@@ -192,21 +186,18 @@ internal static class CommandDispatcher
                 { "it", "You have to reply to a message containing the message" }
             });
 
-            if (sender != null)
+            if (sender == null) return CommandExecutionState.UNMET_CONDITIONS;
+
+            var messageOptions = new MessageOptions
             {
-                var messageOptions = new MessageOptions
-
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = text,
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    Username = e.Message.From?.Username,
-
-                    ReplyToMessageId = e.Message.MessageId
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = e.Message.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return CommandExecutionState.UNMET_CONDITIONS;
         }
@@ -567,20 +558,18 @@ internal static class CommandDispatcher
                 { "en", "You have to reply to a message containing the query" }
             });
             if (e.Message.From == null) return null;
-            if (sender != null)
-            {
-                var messageOptions = new MessageOptions
+            if (sender == null) return null;
 
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = text,
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    Username = e.Message.From?.Username,
-                    ReplyToMessageId = e.Message.MessageId
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+            {
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = e.Message.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return null;
         }
@@ -595,20 +584,18 @@ internal static class CommandDispatcher
                 {
                     { "en", "Query execution. Result: " + i }
                 });
-                if (e.Message.From != null)
-                {
-                    var messageOptions = new MessageOptions
+                if (e.Message.From == null) return i;
 
-                    {
-                        ChatId = e.Message.From?.Id,
-                        Text = text,
-                        ChatType = ChatType.Private,
-                        Lang = e.Message.From?.LanguageCode,
-                        Username = e.Message.From?.Username,
-                        ReplyToMessageId = e.Message.MessageId
-                    };
-                    await sender.SendTextMessageAsync(messageOptions);
-                }
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId
+                };
+                await sender.SendTextMessageAsync(messageOptions);
 
                 return i;
             }

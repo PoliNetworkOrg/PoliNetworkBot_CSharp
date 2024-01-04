@@ -736,8 +736,6 @@ public class TelegramBotAbstract
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        return null;
     }
 
     internal async Task<bool> SendMedia(GenericFile genericFile, long chatid, ChatType chatType, string? username,

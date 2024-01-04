@@ -60,18 +60,17 @@ public static class Logger
                 {
                     { "un", escaped }
                 });
-                if (messageToBeSent.Key.Value != null)
-                {
-                    var messageOptions = new MessageOptions
 
-                    {
-                        ChatId = messageToBeSent.Key.Key,
-                        Text = text,
-                        ChatType = messageToBeSent.ChatType,
-                        SplitMessage = true
-                    };
-                    await messageToBeSent.Key.Value.SendTextMessageAsync(messageOptions);
-                }
+                if (messageToBeSent.Key.Value == null) continue;
+
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = messageToBeSent.Key.Key,
+                    Text = text,
+                    ChatType = messageToBeSent.ChatType,
+                    SplitMessage = true
+                };
+                await messageToBeSent.Key.Value.SendTextMessageAsync(messageOptions);
             }
             catch (Exception e)
             {

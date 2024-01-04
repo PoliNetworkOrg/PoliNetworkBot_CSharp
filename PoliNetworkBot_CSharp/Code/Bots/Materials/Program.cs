@@ -300,19 +300,17 @@ public class Program
             };
             var text = new Language(dict);
 
-            if (sender != null)
-            {
-                var messageOptions = new MessageOptions
+            if (sender == null) return;
 
-                {
-                    ChatId = LogGroup,
-                    Text = text,
-                    ChatType = ChatType.Group,
-                    Lang = "uni",
-                    ParseMode = ParseMode.Html
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+            {
+                ChatId = LogGroup,
+                Text = text,
+                ChatType = ChatType.Group,
+                Lang = "uni",
+                ParseMode = ParseMode.Html
+            };
+            await sender.SendTextMessageAsync(messageOptions);
         }
         catch (Exception ex)
         {
@@ -677,19 +675,18 @@ public class Program
                 { "it", "Le immagini sono accettate solo se inviate senza compressione" }
             };
             var text = new Language(dict);
-            if (telegramBotAbstract != null)
-            {
-                var messageOptions = new MessageOptions
+            if (telegramBotAbstract == null) return;
 
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = text,
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    ParseMode = ParseMode.Html
-                };
-                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+
+            {
+                ChatId = e.Message.From?.Id,
+                Text = text,
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                ParseMode = ParseMode.Html
+            };
+            await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
             return;
         }

@@ -1,6 +1,6 @@
 ﻿namespace PoliNetworkBot_CSharp.Code.Bots.RoomsBot.Data;
 
-public class Const
+public static class Const
 {
     public const string HrefRepairLink = "https://www7.ceda.polimi.it/spazi/spazi/controller/";
 

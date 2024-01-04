@@ -326,21 +326,20 @@ internal static class MainAnon
                 {
                     { "it", "L'identità non è stata riconosciuta. Operazione annullata" }
                 });
-                if (telegramBotAbstract != null)
-                {
-                    var messageOptions = new MessageOptions
-                    {
-                        ChatId = m1.From?.Id,
-                        ParseMode = ParseMode.Html,
-                        Username = m1.From?.Username,
+                if (telegramBotAbstract == null) return;
 
-                        ChatType = ChatType.Private,
-                        Lang = m1.From?.LanguageCode,
-                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        Text = l3
-                    };
-                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                }
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = m1.From?.Id,
+                    ParseMode = ParseMode.Html,
+                    Username = m1.From?.Username,
+
+                    ChatType = ChatType.Private,
+                    Lang = m1.From?.LanguageCode,
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = l3
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
 
                 return;
@@ -567,20 +566,19 @@ internal static class MainAnon
                     }
                 });
 
-                if (telegramBotAbstract != null)
+                if (telegramBotAbstract == null) return false;
+
+                var messageOptions = new MessageOptions
                 {
-                    var messageOptions = new MessageOptions
-                    {
-                        ChatId = e.GetFromUserId(),
-                        ParseMode = ParseMode.Html,
-                        Username = e.GetUsername(),
-                        ChatType = ChatType.Private,
-                        Lang = e.GetLanguageCode(),
-                        ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
-                        Text = l6
-                    };
-                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                }
+                    ChatId = e.GetFromUserId(),
+                    ParseMode = ParseMode.Html,
+                    Username = e.GetUsername(),
+                    ChatType = ChatType.Private,
+                    Lang = e.GetLanguageCode(),
+                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+                    Text = l6
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
 
                 return false;
             }

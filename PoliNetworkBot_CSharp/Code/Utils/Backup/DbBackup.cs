@@ -26,7 +26,7 @@ public static class DbBackup
         return null;
     }
 
-    private static DbBackupDdl? FillDdl(DbConfigConnection dbConfig)
+    private static DbBackupDdl FillDdl(DbConfigConnection dbConfig)
     {
         var dbBackupDdl = new DbBackupDdl();
         dbBackupDdl.Procedures ??= new Dictionary<string, DataTable>();

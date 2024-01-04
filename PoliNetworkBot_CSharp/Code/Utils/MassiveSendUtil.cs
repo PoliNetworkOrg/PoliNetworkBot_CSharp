@@ -37,20 +37,18 @@ public static class MassiveSendUtil
                     { "it", "You have to reply to a message containing the message" }
                 });
 
-                if (e?.Message != null)
-                {
-                    var messageOptions = new MessageOptions
+                if (e?.Message == null) return false;
 
-                    {
-                        ChatId = e.Message.From?.Id,
-                        Text = text,
-                        ChatType = ChatType.Private,
-                        Lang = e.Message.From?.LanguageCode,
-                        Username = e.Message.From?.Username,
-                        ReplyToMessageId = e.Message.MessageId
-                    };
-                    await sender.SendTextMessageAsync(messageOptions);
-                }
+                var messageOptions = new MessageOptions
+                {
+                    ChatId = e.Message.From?.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
+                    Lang = e.Message.From?.LanguageCode,
+                    Username = e.Message.From?.Username,
+                    ReplyToMessageId = e.Message.MessageId
+                };
+                await sender.SendTextMessageAsync(messageOptions);
 
                 return false;
             }
@@ -84,20 +82,18 @@ public static class MassiveSendUtil
         if (groups?.Rows == null || groups.Rows.Count == 0)
         {
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
-            if (e?.Message.From != null)
-            {
-                var messageOptions = new MessageOptions
+            if (e?.Message.From == null) return false;
 
-                {
-                    ChatId = e.Message.From?.Id,
-                    Text = new Language(dict),
-                    ChatType = ChatType.Private,
-                    Lang = e.Message.From?.LanguageCode,
-                    Username = e.Message.From?.Username,
-                    ReplyToMessageId = e.Message.MessageId
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            var messageOptions = new MessageOptions
+            {
+                ChatId = e.Message.From?.Id,
+                Text = new Language(dict),
+                ChatType = ChatType.Private,
+                Lang = e.Message.From?.LanguageCode,
+                Username = e.Message.From?.Username,
+                ReplyToMessageId = e.Message.MessageId
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return false;
         }

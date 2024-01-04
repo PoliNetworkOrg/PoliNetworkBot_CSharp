@@ -583,20 +583,18 @@ internal static class RestrictUser
                 { "en", "We can't find the target." },
                 { "it", "Non riusciamo a trovare il bersaglio" }
             });
-            if (sender != null)
-            {
-                var messageOptions = new MessageOptions
+            if (sender == null) return;
+            var messageOptions = new MessageOptions
 
-                {
-                    ChatType = ChatType.Private,
-                    ChatId = e?.Message.From?.Id,
-                    Text = lang2,
-                    Lang = lang,
-                    Username = username,
-                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
-                };
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            {
+                ChatType = ChatType.Private,
+                ChatId = e?.Message.From?.Id,
+                Text = lang2,
+                Lang = lang,
+                Username = username,
+                ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
+            };
+            await sender.SendTextMessageAsync(messageOptions);
 
             return;
         }
@@ -609,21 +607,20 @@ internal static class RestrictUser
                 { "it", "Il messaggio a cui rispondi non può essere vuoto" }
             });
             if (e?.Message.From == null) return;
-            if (sender != null)
+            if (sender == null) return;
+
+            var messageOptions = new MessageOptions
+
             {
-                var messageOptions = new MessageOptions
+                ChatId = e.Message.From.Id,
+                Text = lang2,
+                Lang = lang,
+                Username = username,
+                ChatType = ChatType.Private,
+                ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
+            };
 
-                {
-                    ChatId = e.Message.From.Id,
-                    Text = lang2,
-                    Lang = lang,
-                    Username = username,
-                    ChatType = ChatType.Private,
-                    ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE)
-                };
-
-                await sender.SendTextMessageAsync(messageOptions);
-            }
+            await sender.SendTextMessageAsync(messageOptions);
 
             return;
         }
