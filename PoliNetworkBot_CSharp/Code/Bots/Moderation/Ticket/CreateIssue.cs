@@ -8,6 +8,7 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 public static class CreateIssue
 {
     public static Issue Create(string title, string body, long telegramChatId, long? fromId,
+
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {

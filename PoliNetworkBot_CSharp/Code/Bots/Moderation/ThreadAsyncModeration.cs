@@ -188,6 +188,7 @@ public static class ThreadAsyncModeration
             var messageOptions = new MessageOptions
 
             {
+
                 ChatId = GroupsConstants.BackupGroup.FullLong(),
 
                 Text = text,
