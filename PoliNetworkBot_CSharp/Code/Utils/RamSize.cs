@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -71,14 +72,11 @@ public static class RamSize
 
     private static async Task SendMessageThreadsCount(long backupGroup)
     {
-        var num = "#messageThreadCount " + Bots.Moderation.Ticket.Utils.Stats.GetCountStored();
-        Logger.Logger.WriteLine("messageThreadCount: " + num);
-        var language = new Language(
-            new Dictionary<string, string?>
-            {
-                { "en", num }
-            });
-        await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), "en",
+        const string messageThreadCount = "messageThreadCount";
+        var num = "#" + messageThreadCount + " " + Stats.GetCountStored();
+        Logger.Logger.WriteLine(messageThreadCount + ": " + num);
+        var language = new L(num);
+        await SendMessage.SendMessageInAGroup(BotUtil.GetFirstModerationRealBot(), null,
             language, null, backupGroup, ChatType.Group, ParseMode.Html, null, true);
     }
 
