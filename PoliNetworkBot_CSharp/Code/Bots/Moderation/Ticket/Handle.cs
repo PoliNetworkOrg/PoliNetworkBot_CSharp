@@ -45,7 +45,7 @@ public static class Handle
     private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
         MessageEventArgs messageEventArgs)
     {
-        var messageThread = FindOrigin(messageReplyToMessage);
+        var messageThread = FindOrigin(messageReplyToMessage, messageEventArgs.Message);
 
         if (messageThread == null) return;
 
@@ -79,7 +79,7 @@ public static class Handle
         );
     }
 
-    private static MessageThread? FindOrigin(Message messageReplyToMessage)
+    private static MessageThread? FindOrigin(Message messageReplyToMessage, Message newMessage)
     {
         lock (Threads)
         {
@@ -93,7 +93,7 @@ public static class Handle
                 if (variable.MessageId == messageId &&
                     variable.ChatId == chatId)
                 {
-                    variable.Children.Add(new MessageThread { MessageId = messageId, ChatId = chatId });
+                    variable.Children.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
                     return variable;
                 }
 
@@ -102,7 +102,7 @@ public static class Handle
                     if (variable2.MessageId == messageId &&
                         variable2.ChatId == chatId)
                     {
-                        variable.Children.Add(new MessageThread { MessageId = messageId, ChatId = chatId });
+                        variable.Children.Add(new MessageThread { MessageId = newMessage.MessageId, ChatId = chatId });
                         return variable2;
                     }
             }
