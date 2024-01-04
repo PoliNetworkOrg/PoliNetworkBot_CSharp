@@ -480,63 +480,69 @@ internal static class ModerationCheck
 
         const int minutesWait = 2;
 
-        if (r1?.GetChatType() != ChatType.Private)
+        if (r1?.GetChatType() == ChatType.Private)
         {
-            var r2 = r1?.GetMessage();
-            if (r2 != null)
-                switch (r2)
-                {
-                    case TLMessage r3:
+            return;
+        }
+
+        var r2 = r1?.GetMessage();
+        if (r2 == null)
+        {
+            return;
+        }
+
+        switch (r2)
+        {
+            case TLMessage r3:
+            {
+                if (GlobalVariables.MessagesToDelete != null)
+                    lock (GlobalVariables.MessagesToDelete)
                     {
-                        if (GlobalVariables.MessagesToDelete != null)
-                            lock (GlobalVariables.MessagesToDelete)
-                            {
-                                var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
-                                var timeToDelete = DateTime.Now + timeUntilDelete;
-                                var botid = telegramBotClient?.GetId();
-                                if (botid != null)
-                                {
-                                    var toDelete = new MessageToDelete(r3, chatId, timeToDelete, botid.Value,
-                                        r1?.GetChatType(), null);
-                                    GlobalVariables.MessagesToDelete.Add(toDelete);
+                        var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
+                        var timeToDelete = DateTime.Now + timeUntilDelete;
+                        var botid = telegramBotClient?.GetId();
+                        if (botid != null)
+                        {
+                            var toDelete = new MessageToDelete(r3, chatId, timeToDelete, botid.Value,
+                                r1?.GetChatType(), null);
+                            GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                        GlobalVariables.MessagesToDelete);
-                                }
-                            }
-
-                        break;
+                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                GlobalVariables.MessagesToDelete);
+                        }
                     }
-                    case Message r4:
+
+                break;
+            }
+            case Message r4:
+            {
+                if (GlobalVariables.MessagesToDelete != null)
+                    lock (GlobalVariables.MessagesToDelete)
                     {
-                        if (GlobalVariables.MessagesToDelete != null)
-                            lock (GlobalVariables.MessagesToDelete)
-                            {
-                                var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
-                                var timeToDelete = DateTime.Now + timeUntilDelete;
-                                var botId = telegramBotClient?.GetId();
-                                if (botId != null)
-                                {
-                                    var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
-                                        r1?.GetChatType(), null);
-                                    GlobalVariables.MessagesToDelete.Add(toDelete);
+                        var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
+                        var timeToDelete = DateTime.Now + timeUntilDelete;
+                        var botId = telegramBotClient?.GetId();
+                        if (botId != null)
+                        {
+                            var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botId.Value,
+                                r1?.GetChatType(), null);
+                            GlobalVariables.MessagesToDelete.Add(toDelete);
 
-                                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                                        GlobalVariables.MessagesToDelete);
-                                }
-                            }
+                            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
+                                GlobalVariables.MessagesToDelete);
+                        }
+                    }
 
-                        break;
-                    }
-                    default:
-                    {
-                        var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
-                        var e3 = new Exception(e4);
-                        await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient,
-                            EventArgsContainer.Get(messageEventArgs));
-                        break;
-                    }
-                }
+                break;
+            }
+            default:
+            {
+                var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
+                var e3 = new Exception(e4);
+                await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient,
+                    EventArgsContainer.Get(messageEventArgs));
+                break;
+            }
         }
     }
 
@@ -655,8 +661,10 @@ internal static class ModerationCheck
 
         var donesomething = false;
 
-        foreach (var usernameCheck2 in usernameCheck
-                     .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool))
+        var usernameAndNameCheckResults = usernameCheck
+            .Where(usernameCheck2 => usernameCheck2.Name || usernameCheck2.UsernameBool);
+        
+        foreach (var usernameCheck2 in usernameAndNameCheckResults)
         {
             await SendUsernameWarning(telegramBotClient,
                 usernameCheck2.UsernameBool,

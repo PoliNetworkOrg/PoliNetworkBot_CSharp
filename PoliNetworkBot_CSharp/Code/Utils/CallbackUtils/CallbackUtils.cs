@@ -44,7 +44,7 @@ public static class CallbackUtils
         var replyMarkupObject = GetReplyMarkupObject(callbackGenericData, key);
         if (telegramBotAbstract == null) return null;
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = chatToSendTo,

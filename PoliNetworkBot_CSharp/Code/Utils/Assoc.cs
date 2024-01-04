@@ -99,7 +99,7 @@ public static class Assoc
 
                 if (sender != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.From?.Id,
@@ -162,7 +162,7 @@ public static class Assoc
                         });
                         if (sender != null)
                         {
-                            var messageOptions = new TelegramBotAbstract.MessageOptions
+                            var messageOptions = new MessageOptions
 
                             {
                                 ChatId = e.Message.From?.Id,
@@ -230,7 +230,7 @@ public static class Assoc
             if (sender == null) return true;
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -277,7 +277,7 @@ public static class Assoc
         if (sender != null)
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -376,7 +376,7 @@ public static class Assoc
             if (e == null) return r;
 
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e.Message.From?.Id,
@@ -400,7 +400,7 @@ public static class Assoc
 
             if (e?.Message != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -476,7 +476,7 @@ public static class Assoc
         if (sender != null)
             if (e?.Message.From != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -764,7 +764,7 @@ public static class Assoc
 
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = eventArgs?.Message.From?.Id,
@@ -827,7 +827,7 @@ public static class Assoc
                     });
 
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
 
@@ -926,7 +926,7 @@ public static class Assoc
 
                     if (callbackGenericData.Bot != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
 
                         {
                             ChatId = assocVetoData.MessageEventArgs?.Message.From?.Id,

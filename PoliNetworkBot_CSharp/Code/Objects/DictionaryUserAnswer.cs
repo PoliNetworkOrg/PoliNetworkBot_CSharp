@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Enums;
+using PoliNetworkBot_CSharp.Code.Objects.TelegramBotAbstract;
 using Telegram.Bot.Types.Enums;
 
 #endregion
@@ -83,7 +84,7 @@ public class DictionaryUserAnswer
                     if (telegramBotAbstract != null)
                     {
                         var messageOptions =
-                            new TelegramBotAbstract.TelegramBotAbstract.MessageOptions
+                            new MessageOptions
 
                             {
                                 ChatId = idUser,

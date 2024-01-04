@@ -604,13 +604,13 @@ internal static class Rooms
                     message, TextAsCaption.AS_CAPTION, "text/html");
 
 
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
-                    documentInput = document,
+                    DocumentInput = document,
                     DisablePreviewLink = true,
                     Username = e?.Message.From?.Username,
-                    peer = peer,
+                    Peer = peer,
                     Lang = e?.Message.From?.LanguageCode
                 };
                 sender?.SendFileAsync(messageOptions);

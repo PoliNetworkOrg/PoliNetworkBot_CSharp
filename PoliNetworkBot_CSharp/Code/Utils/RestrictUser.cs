@@ -585,7 +585,7 @@ internal static class RestrictUser
             });
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatType = ChatType.Private,
@@ -611,7 +611,7 @@ internal static class RestrictUser
             if (e?.Message.From == null) return;
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From.Id,

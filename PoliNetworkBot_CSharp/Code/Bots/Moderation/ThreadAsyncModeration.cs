@@ -185,7 +185,7 @@ public static class ThreadAsyncModeration
                 { "en", "#restarted \nGitHub Build Date:\n" + CommandDispatcher.GetRunningTime().Result }
             });
 
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
 

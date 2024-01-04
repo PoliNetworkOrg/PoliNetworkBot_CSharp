@@ -393,7 +393,7 @@ public static class MessageDb
         var text2 = new Language(dict);
         if (telegramBotAbstract != null)
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = chatIdToSendTo.Value,

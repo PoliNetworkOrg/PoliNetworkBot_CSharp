@@ -75,7 +75,7 @@ internal class MessageAnonToSendInQueue
         if (telegramBotAbstract == null) return null;
 
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = ConfigAnon.ModAnonCheckGroup,

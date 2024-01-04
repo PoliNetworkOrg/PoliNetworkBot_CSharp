@@ -28,24 +28,27 @@ internal static class SendMessage
         Language text, string? lang, string? username, long? userId, string? firstName, string? lastName, long? chatId,
         ChatType? chatType, ParseMode parseMode = ParseMode.Html, InlineKeyboardMarkup? inlineKeyboardMarkup = null)
     {
+        if (telegramBotClient == null)
+            return null;
+
+        var replyMarkupObject =
+            inlineKeyboardMarkup == null ? null : new ReplyMarkupObject(inlineKeyboardMarkup);
+
         MessageSentResult? r = null;
         try
         {
-            if (telegramBotClient != null)
-            {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions1 = new MessageOptions
 
-                {
-                    ChatId = userId,
-                    Text = text,
-                    ParseMode = parseMode,
-                    Lang = lang,
-                    Username = username,
-                    ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
-                    ChatType = ChatType.Private
-                };
-                r = await telegramBotClient.SendTextMessageAsync(messageOptions);
-            }
+            {
+                ChatId = userId,
+                Text = text,
+                ParseMode = parseMode,
+                Lang = lang,
+                Username = username,
+                ReplyMarkupObject = replyMarkupObject,
+                ChatType = ChatType.Private
+            };
+            r = await telegramBotClient.SendTextMessageAsync(messageOptions1);
 
             if (r != null && r.IsSuccess()) return r;
         }
@@ -63,24 +66,18 @@ internal static class SendMessage
             { "it", "[Messaggio per " + messageTo + "]\n\n" + text.Select("it") }
         });
 
-        if (telegramBotClient != null)
+        var messageOptions2 = new MessageOptions
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
-
-            {
-                ChatId = chatId,
-                Text = text3,
-                ParseMode = parseMode,
-                Lang = lang,
-                Username = username,
-                ReplyMarkupObject = new ReplyMarkupObject(inlineKeyboardMarkup),
-                ChatType = ChatType.Private
-            };
-            var sendTextMessageAsync = await telegramBotClient.SendTextMessageAsync(messageOptions);
-            return sendTextMessageAsync;
-        }
-
-        return null;
+            ChatId = chatId,
+            Text = text3,
+            ParseMode = parseMode,
+            Lang = lang,
+            Username = username,
+            ReplyMarkupObject = replyMarkupObject,
+            ChatType = chatType
+        };
+        var sendTextMessageAsync = await telegramBotClient.SendTextMessageAsync(messageOptions2);
+        return sendTextMessageAsync;
     }
 
     private static string GetMessageTo(string? firstname, string? lastname, long? messageFromUserId)
@@ -101,7 +98,7 @@ internal static class SendMessage
         {
             if (telegramBotClient != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = userIdToSendTo,
@@ -139,7 +136,7 @@ internal static class SendMessage
 
         try
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = chatId,
@@ -169,11 +166,10 @@ internal static class SendMessage
         string? username, string? lang, long? replyToMessageId, bool disablePreviewLink,
         ParseMode parseModeCaption = ParseMode.Html)
     {
-        var messageOptions = new TelegramBotAbstract.MessageOptions
-
+        var messageOptions = new MessageOptions
         {
-            documentInput = file,
-            peer = peer,
+            DocumentInput = file,
+            Peer = peer,
             ChatId = peer.GetUserId(),
             Username = username,
             Lang = lang,

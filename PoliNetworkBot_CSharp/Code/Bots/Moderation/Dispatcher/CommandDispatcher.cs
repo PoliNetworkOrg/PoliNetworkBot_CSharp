@@ -160,7 +160,7 @@ internal static class CommandDispatcher
     {
         if (e != null)
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e.Message.From?.Id,
@@ -194,7 +194,7 @@ internal static class CommandDispatcher
 
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -414,7 +414,7 @@ internal static class CommandDispatcher
                 if (e.Message.From != null)
                     if (sender != null)
                     {
-                        var messageOptions = new TelegramBotAbstract.MessageOptions
+                        var messageOptions = new MessageOptions
 
                         {
                             ChatId = e.Message.From?.Id,
@@ -569,7 +569,7 @@ internal static class CommandDispatcher
             if (e.Message.From == null) return null;
             if (sender != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -597,7 +597,7 @@ internal static class CommandDispatcher
                 });
                 if (e.Message.From != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.From?.Id,
@@ -626,16 +626,16 @@ internal static class CommandDispatcher
 
         PeerAbstract peer = new(e.Message.From.Id, e.Message.Chat.Type);
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
             ChatId = peer.GetUserId(),
-            peer = peer,
+            Peer = peer,
             Lang = e.Message.From?.LanguageCode,
             Username = e.Message.From?.Username,
             ReplyToMessageId = e.Message.MessageId,
             DisablePreviewLink = false,
-            documentInput = documentInput
+            DocumentInput = documentInput
         };
         var v = sender.SendFileAsync(messageOptions2);
         return v ? 1 : 0;
@@ -822,7 +822,7 @@ internal static class CommandDispatcher
             { "en", telegramBotClient.GetContactString() }
         });
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = e?.Message.Chat.Id,
@@ -885,7 +885,7 @@ internal static class CommandDispatcher
         });
         if (telegramBotClient != null)
         {
-            var messageOptions = new TelegramBotAbstract.MessageOptions
+            var messageOptions = new MessageOptions
 
             {
                 ChatId = e?.Message.Chat.Id,

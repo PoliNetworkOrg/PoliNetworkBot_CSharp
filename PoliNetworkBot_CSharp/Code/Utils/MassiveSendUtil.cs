@@ -39,7 +39,7 @@ public static class MassiveSendUtil
 
                 if (e?.Message != null)
                 {
-                    var messageOptions = new TelegramBotAbstract.MessageOptions
+                    var messageOptions = new MessageOptions
 
                     {
                         ChatId = e.Message.From?.Id,
@@ -86,7 +86,7 @@ public static class MassiveSendUtil
             var dict = new Dictionary<string, string?> { { "en", "No groups!" } };
             if (e?.Message.From != null)
             {
-                var messageOptions = new TelegramBotAbstract.MessageOptions
+                var messageOptions = new MessageOptions
 
                 {
                     ChatId = e.Message.From?.Id,
@@ -141,7 +141,7 @@ public static class MassiveSendUtil
             return true;
 
 
-        var messageOptions2 = new TelegramBotAbstract.MessageOptions
+        var messageOptions2 = new MessageOptions
 
         {
             ChatId = e.Message.From?.Id,

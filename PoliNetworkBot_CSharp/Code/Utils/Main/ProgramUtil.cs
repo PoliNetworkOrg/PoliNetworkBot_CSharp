@@ -661,7 +661,7 @@ public static class ProgramUtil
         });
 
 
-        var messageOptions = new TelegramBotAbstract.MessageOptions
+        var messageOptions = new MessageOptions
 
         {
             ChatId = 768169879,
