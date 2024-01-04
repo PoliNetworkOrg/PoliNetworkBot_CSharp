@@ -1,13 +1,24 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using Octokit;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
+using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
 
-public static class Data
+public static class DataTicketClass
 {
+    public static readonly List<ChatIdTgWith100>
+        AllowedGroups = new()
+        {
+            GroupsConstants.TestGroup,
+            GroupsConstants.PianoDiStudi,
+            GroupsConstants.Dsu
+        };
+    
     private const string NameUserAgent = "PoliNetwork-Ticket";
     public const string OwnerRepo = "PoliNetworkOrg";
     public const string NameRepo = "testIssue";

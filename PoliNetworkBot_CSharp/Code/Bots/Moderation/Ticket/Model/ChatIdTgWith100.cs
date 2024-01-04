@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 
 [Serializable]
 public class ChatIdTgWith100

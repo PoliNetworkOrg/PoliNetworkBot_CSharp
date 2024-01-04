@@ -2,50 +2,120 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
 
 public static class Handle
 {
-    private static readonly List<ChatIdTgWith100>
-        AllowedGroups = new()
-        {
-            GroupsConstants.TestGroup,
-            GroupsConstants.PianoDiStudi,
-            GroupsConstants.Dsu
-        };
+    private const int MaxLengthTitleIssue = 200;
 
+    private static readonly List<MessageThread> Threads = new();
 
     public static void HandleMethod(TelegramBotAbstract t, MessageEventArgs e)
     {
+        HandleRemoveOutdatedThreadsFromRam();
+
         if (e.Message.Chat.Type is not (ChatType.Group or ChatType.Supergroup))
             return;
 
 
-        var (found, chatIdTgWith100) = AllowedGroupsContains(e.Message.Chat.Id);
-        if (!found || chatIdTgWith100 == null)
+        var chatIdTgWith100 = AllowedGroupsContains(e.Message.Chat.Id);
+        if (chatIdTgWith100 == null)
+            return;
 
+
+        var messageReplyToMessage = e.Message.ReplyToMessage;
+        if (messageReplyToMessage != null)
+        {
+            HandleReply(messageReplyToMessage, t, e);
+            return;
+        }
+
+        HandleCreateIssue(t, e, chatIdTgWith100);
+    }
+
+    private static void HandleReply(Message messageReplyToMessage, TelegramBotAbstract telegramBotAbstract,
+        MessageEventArgs messageEventArgs)
+    {
+        MessageThread? messageThread = FindOrigin(messageReplyToMessage);
+
+        if (messageThread == null)
+        {
+            return;
+        }
+
+        Console.WriteLine("todo: add comment to issue " + messageThread.IssueNumber);
+        //todo: add comment to issue
+    }
+
+    private static MessageThread? FindOrigin(Message messageReplyToMessage)
+    {
+        lock (Threads)
+        {
+            foreach (var variable in Threads)
+            {
+                variable.Children ??= new List<MessageThread>();
+
+                var messageId = messageReplyToMessage.MessageId;
+                var chatId = messageReplyToMessage.Chat.Id;
+
+                if (variable.MessageId == messageId &&
+                    variable.ChatId == chatId)
+                {
+                    variable.Children.Add(new MessageThread() { MessageId = messageId, ChatId = chatId });
+                    return variable;
+                }
+
+
+                foreach (var variable2 in variable.Children)
+                {
+                    if (variable2.MessageId == messageId &&
+                        variable2.ChatId == chatId)
+                    {
+                        variable.Children.Add(new MessageThread() { MessageId = messageId, ChatId = chatId });
+                        return variable2;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static void HandleRemoveOutdatedThreadsFromRam()
+    {
+        lock (Threads)
+        {
+            for (var index = 0; index < Threads.Count; index++)
+            {
+                var variable = Threads[index];
+                if (variable.DateTime != null && variable.DateTime.Value.AddDays(3) >= DateTime.Now) continue;
+
+                Threads.RemoveAt(index);
+                index--;
+            }
+        }
+    }
+
+    private static void HandleCreateIssue(TelegramBotAbstract t, MessageEventArgs e, ChatIdTgWith100 chatIdTgWith100)
+    {
+        var messageText = e.Message.Text;
+        if (string.IsNullOrEmpty(messageText))
             return;
 
         try
         {
-            var messageReplyToMessage = e.Message.ReplyToMessage;
-            if (messageReplyToMessage != null)
-
-                return;
-
-            var messageText = e.Message.Text;
-            if (string.IsNullOrEmpty(messageText))
-                return;
-
             var date = GetItalianDateTime(e);
-
 
             var chatId = chatIdTgWith100.Id;
 
@@ -66,10 +136,22 @@ public static class Handle
             body += messageText;
 
 
-            const int maxLengthTitle = 200;
-            var substring = messageText.Length > maxLengthTitle ? messageText[..maxLengthTitle] : messageText;
+            var substring = messageText.Length > MaxLengthTitleIssue ? messageText[..MaxLengthTitleIssue] : messageText;
 
-            CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
+            var issue = CreateIssue.Create(substring, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
+
+            var messageThread = new MessageThread
+            {
+                DateTime = DateTime.Now,
+                MessageId = e.Message.MessageId,
+                ChatId = e.Message.Chat.Id,
+                IssueNumber = issue.Number
+            };
+
+            lock (Threads)
+            {
+                Threads.Add(messageThread);
+            }
         }
         catch (Exception ex)
         {
@@ -85,10 +167,8 @@ public static class Handle
         return date;
     }
 
-    private static Tuple<bool, ChatIdTgWith100?> AllowedGroupsContains(long chatId)
-    {
-        var b = AllowedGroups.FirstOrDefault(variable => variable.GetString() == chatId.ToString());
+    private static ChatIdTgWith100? AllowedGroupsContains(long chatId) =>
+        DataTicketClass.AllowedGroups.FirstOrDefault(a => ChatIdTgWith100Equales(a, chatId));
 
-        return b == null ? new Tuple<bool, ChatIdTgWith100?>(false, null) : new Tuple<bool, ChatIdTgWith100?>(true, b);
-    }
+    private static bool ChatIdTgWith100Equales(ChatIdTgWith100 a, long b) => a.GetString() == b.ToString();
 }

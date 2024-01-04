@@ -1,9 +1,11 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Octokit;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Data;
+using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 
-namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket;
+namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 
 public static class CreateIssue
 {
@@ -11,7 +13,7 @@ public static class CreateIssue
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {
-        var githubClient = Data.GetGitHubClient(telegramBotAbstract);
+        var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
         var newIssue = new NewIssue(title)
         {
             Body = body
@@ -21,7 +23,7 @@ public static class CreateIssue
 
         CreateAndAddLabel(chatIdTgWith100?.Category, newIssue, telegramBotAbstract);
 
-        var task = githubClient.Issue.Create(Data.OwnerRepo, Data.NameRepo, newIssue);
+        var task = githubClient.Issue.Create(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo, newIssue);
         task.Wait();
         return task.Result;
     }
@@ -45,8 +47,8 @@ public static class CreateIssue
         {
             var generateHexColor = GenerateHexColor(labelIdTelegramName);
             var label = new NewLabel(labelIdTelegramName, generateHexColor);
-            var githubClient = Data.GetGitHubClient(telegramBotAbstract);
-            githubClient.Issue.Labels.Create(Data.OwnerRepo, Data.NameRepo, label).Wait();
+            var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
+            githubClient.Issue.Labels.Create(DataTicketClass.OwnerRepo, DataTicketClass.NameRepo, label).Wait();
         }
         catch
         {
