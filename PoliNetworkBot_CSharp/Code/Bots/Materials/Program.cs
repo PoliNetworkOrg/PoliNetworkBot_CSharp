@@ -1120,37 +1120,41 @@ public class Program
         if (replyKeyboard == null)
             return;
 
+        var message = e?.Message;
+        var messageFrom = message?.From;
+        if (messageFrom == null)
+        {
+            return;
+        }
+
         var dict = new Dictionary<string, string?>
         {
             { "en", "Choose a path" },
             { "it", "Seleziona un percorso" }
         };
         var text = new Language(dict);
-        if (e?.Message.From != null)
+
+        var optionsStringToKeyboard =
+            BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, messageFrom.LanguageCode);
+        if (optionsStringToKeyboard != null)
         {
-            var optionsStringToKeyboard =
-                BotUtils.KeyboardMarkup.OptionsStringToKeyboard(replyKeyboard, e.Message.From.LanguageCode);
-            if (optionsStringToKeyboard != null)
+            var replyMarkupObject = new ReplyMarkupObject(
+                new ReplyMarkupOptions(
+                    optionsStringToKeyboard
+                ), false
+            );
+            if (telegramBotAbstract != null)
             {
-                var replyMarkupObject = new ReplyMarkupObject(
-                    new ReplyMarkupOptions(
-                        optionsStringToKeyboard
-                    ), false
-                );
-                if (telegramBotAbstract != null)
+                var messageOptions = new MessageOptions
+
                 {
-                    var messageOptions = new MessageOptions
-
-                    {
-                        ChatId = e.Message.Chat.Id,
-                        Text = text,
-                        ChatType = ChatType.Private,
-
-                        Lang = e.Message.From?.LanguageCode
-                    };
-                    await telegramBotAbstract.SendTextMessageAsync(messageOptions);
-                }
+                    ChatId = message?.Chat.Id,
+                    Text = text,
+                    ChatType = ChatType.Private,
                     ReplyMarkupObject = replyMarkupObject,
+                    Lang = message?.From?.LanguageCode
+                };
+                await telegramBotAbstract.SendTextMessageAsync(messageOptions);
             }
         }
     }
