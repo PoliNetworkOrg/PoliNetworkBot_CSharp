@@ -1150,6 +1150,7 @@ public class Program
                     };
                     await telegramBotAbstract.SendTextMessageAsync(messageOptions);
                 }
+                    ReplyMarkupObject = replyMarkupObject,
             }
         }
     }
