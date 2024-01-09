@@ -1122,10 +1122,7 @@ public class Program
 
         var message = e?.Message;
         var messageFrom = message?.From;
-        if (messageFrom == null)
-        {
-            return;
-        }
+        if (messageFrom == null) return;
 
         var dict = new Dictionary<string, string?>
         {
