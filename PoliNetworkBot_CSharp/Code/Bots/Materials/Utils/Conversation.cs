@@ -15,12 +15,7 @@ public class Conversation
     private string? path;
     private string? school;
 
-    private UserState? state;
-
-    public Conversation()
-    {
-        state = UserState.START;
-    }
+    private UserState? state = UserState.START;
 
     public void SetState(UserState? var)
     {
