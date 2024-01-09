@@ -7,6 +7,7 @@ using System.Linq;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Enums;
 using PoliNetworkBot_CSharp.Code.Bots.Materials.Global;
 using PoliNetworkBot_CSharp.Code.Objects;
+using PoliNetworkBot_CSharp.Code.Utils;
 using PoliNetworkBot_CSharp.Code.Utils.Logger;
 
 #endregion
@@ -26,7 +27,7 @@ public static class Keyboards
             { "it", "🔙 Indietro" },
             { "en", "🔙 Back" }
         }));
-        return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+        return KeyboardMarkup.ArrayToMatrixString(options2);
     }
 
     internal static string[]? GetDir(long id)
@@ -67,7 +68,7 @@ public static class Keyboards
                 { "it", "🔙 back" },
                 { "en", "🔙 back" }
             }));
-            return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+            return KeyboardMarkup.ArrayToMatrixString(options2);
         }
 
         options2.Add(new Language(new Dictionary<string, string?>
@@ -85,7 +86,7 @@ public static class Keyboards
             { "it", "🆕 Nuova Cartella" },
             { "en", "🆕 New Folder" }
         }));
-        return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+        return KeyboardMarkup.ArrayToMatrixString(options2);
     }
 
     private static string[] RemoveGit(IEnumerable<string> subdirectoryEntries)
@@ -106,6 +107,6 @@ public static class Keyboards
         var options2 = Navigator.ScuoleCorso.Keys
             .Select(v => new Language(new Dictionary<string, string?> { { "it", v }, { "en", v } })).ToList();
         //r.Add(new List<InlineKeyboardButton> { new(text: v ) });
-        return Code.Utils.KeyboardMarkup.ArrayToMatrixString(options2);
+        return KeyboardMarkup.ArrayToMatrixString(options2);
     }
 }
