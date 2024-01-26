@@ -290,7 +290,6 @@ internal static class ModerationCheck
         return e?.Message != null ? await InviteLinks.CreateInviteLinkAsync(e.Message.Chat.Id, sender, e) : null;
     }
 
-  
 
     internal static bool CheckIfHeIsAllowedSpam(MessageEventArgs? e)
     {
