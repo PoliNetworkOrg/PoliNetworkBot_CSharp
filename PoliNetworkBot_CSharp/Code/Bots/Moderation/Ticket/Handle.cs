@@ -173,11 +173,14 @@ public static class Handle
 
             var issue = CreateIssue.Create(titleIssue, body, e.Message.Chat.Id, e.Message.From?.Id, t, chatIdTgWith100);
 
+            if (issue == null)
+                return;
+
             var messageThread = new MessageThread
             {
                 MessageId = e.Message.MessageId,
                 ChatId = e.Message.Chat.Id,
-                IssueNumber = issue.Number,
+                IssueNumber = issue?.Number,
                 GithubInfo = chatIdTgWith100.GithubInfo
             };
 

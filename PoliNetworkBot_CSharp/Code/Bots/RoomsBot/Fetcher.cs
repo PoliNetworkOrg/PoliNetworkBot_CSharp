@@ -55,16 +55,12 @@ public static class Fetcher
     {
         var doc = FetchOccupationData(campus, dateTime);
         var htmlNodeCollection = doc.DocumentNode.SelectNodes("//tr[contains(@class, 'normalRow')]");
-        foreach (var classNode in htmlNodeCollection)
-            if (classNode.ChildNodes[1].InnerText.Contains(roomName))
-            {
-                var text = Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + classNode.OuterHtml +
-                           Const.HtmlTableEnd;
-                return text;
-            }
-
-
-        return null;
+        var c2 = htmlNodeCollection
+            .First(x => x.ChildNodes.Count > 2 && x.ChildNodes[1].InnerText.Contains(roomName));
+        if (c2 == null) return null;
+        var text = Const.CssStyles + Const.HtmlTableInit + Const.HtmlClockLine + c2.OuterHtml +
+                   Const.HtmlTableEnd;
+        return text;
     }
 
     private static void FixHyperlinks(HtmlNode classNode)
