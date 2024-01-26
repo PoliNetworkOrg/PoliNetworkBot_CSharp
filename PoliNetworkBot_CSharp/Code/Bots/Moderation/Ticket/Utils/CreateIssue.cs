@@ -9,12 +9,14 @@ namespace PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Utils;
 
 public static class CreateIssue
 {
-    public static Issue Create(string title, string body, long telegramChatId, long? fromId,
+    public static Issue? Create(string title, string body, long telegramChatId, long? fromId,
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {
         var githubInfo = chatIdTgWith100?.GithubInfo;
         var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
+        if (githubClient == null)
+            return null;
         var newIssue = new NewIssue(title)
         {
             Body = body
@@ -53,10 +55,13 @@ public static class CreateIssue
             var generateHexColor = GenerateHexColor(labelIdTelegramName);
             var label = new NewLabel(labelIdTelegramName, generateHexColor);
             var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
+            if (githubClient == null)
+                return;
+
             var owner = githubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
             var repo = githubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
 
-            var labelCreated = githubClient.Issue.Labels
+            var labelCreated = githubClient?.Issue.Labels
                 .Create(owner, repo, label).Result;
         }
         catch

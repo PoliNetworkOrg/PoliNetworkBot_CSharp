@@ -78,6 +78,8 @@ public static class Outdated
                 return;
 
             var g = DataTicketClass.GetGitHubClient(telegramBotAbstract);
+            if (g == null)
+                return;
             var owner = v2.GithubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
             var repo = v2.GithubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
             var issueNumber = v2.IssueNumber.Value;

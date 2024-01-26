@@ -49,10 +49,13 @@ public static class DataTicketClass
         d.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    public static GitHubClient GetGitHubClient(TelegramBotAbstract telegramBotAbstract)
+    public static GitHubClient? GetGitHubClient(TelegramBotAbstract telegramBotAbstract)
     {
         if (_gitHubClient != null)
             return _gitHubClient;
+
+        if (string.IsNullOrEmpty(telegramBotAbstract.GithubToken))
+            return null;
 
         var productHeaderValue = new ProductHeaderValue(NameUserAgent);
         _gitHubClient = new GitHubClient(productHeaderValue);
