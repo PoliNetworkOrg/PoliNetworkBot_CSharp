@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using Octokit;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Ticket.Model;
 using PoliNetworkBot_CSharp.Code.Data.Constants;
+using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
