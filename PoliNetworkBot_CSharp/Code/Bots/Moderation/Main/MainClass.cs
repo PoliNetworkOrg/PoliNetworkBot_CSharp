@@ -94,7 +94,7 @@ public static class MainClass
             }
 
             var toExitBecauseUsernameAndNameCheck =
-                await ModerationCheck.CheckUsernameAndName(e, telegramBotClient);
+                await UsernameNameWarning.CheckUsernameAndName(e, telegramBotClient);
             if (toExitBecauseUsernameAndNameCheck)
                 return new ActionDoneObject(ActionDoneEnum.USERNAME_WARNING, null, null);
 
