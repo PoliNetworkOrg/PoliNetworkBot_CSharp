@@ -7,9 +7,12 @@ namespace PoliNetworkBot_CSharp.Code.Utils.MessageToRemove;
 
 public static class MessageToRemoveUtil
 {
-    public static void AddMessageToDelete(long chatId, TelegramBotAbstract telegramBotAbstract, long messageId,
+    public static void AddMessageToDelete(long chatId, TelegramBotAbstract telegramBotAbstract, long? messageId,
         DateTime deleteWhen)
     {
+        if (messageId == null)
+            return;
+        
         const string q = """
                          INSERT INTO MessagesToRemove (message_id , chat_id, bot_id, inserted_when, delete_when)
                          VALUES (@message_id, @chat_id, @bot_id, @inserted_when, @delete_when)

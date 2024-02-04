@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
 using PoliNetworkBot_CSharp.Code.Objects.AbstractBot;
-using PoliNetworkBot_CSharp.Code.Objects.Exceptions;
 using PoliNetworkBot_CSharp.Code.Utils;
-using PoliNetworkBot_CSharp.Code.Utils.Notify;
+using PoliNetworkBot_CSharp.Code.Utils.MessageToRemove;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TeleSharp.TL;
@@ -91,8 +89,7 @@ public static class UsernameNameWarning
                 e.Message.Chat.Type,
                 usernameCheck2.GetFirstName(),
                 usernameCheck2.GetLastName(),
-                e.Message.NewChatMembers,
-                e);
+                e.Message.NewChatMembers);
 
             donesomething = true;
         }
@@ -100,11 +97,10 @@ public static class UsernameNameWarning
         return donesomething;
     }
 
-    public static async Task SendUsernameWarning(TelegramBotAbstract? telegramBotClient,
+    private static async Task SendUsernameWarning(TelegramBotAbstract? telegramBotClient,
         bool username, bool name, string? lang, string? usernameOfUser,
         long chatId, long? userId, long? messageId, ChatType messageChatType,
-        string? firstName, string? lastName, IReadOnlyCollection<User>? newChatMembers,
-        MessageEventArgs? messageEventArgs)
+        string? firstName, string? lastName, IReadOnlyCollection<User>? newChatMembers)
     {
         var s1I = username switch
         {
@@ -136,7 +132,7 @@ public static class UsernameNameWarning
             if (doIt)
             {
                 await SendUsernameWarning2Async(telegramBotClient, s2, lang, usernameOfUser, userId,
-                    firstName, lastName, chatId, messageChatType, messageEventArgs);
+                    firstName, lastName, chatId, messageChatType);
                 GlobalVariables.UsernameWarningDictSent[userId.Value] = DateTime.Now;
             }
         }
@@ -151,9 +147,9 @@ public static class UsernameNameWarning
     }
 
 
-    public static async Task SendUsernameWarning2Async(TelegramBotAbstract? telegramBotClient, Language s2,
+    private static async Task SendUsernameWarning2Async(TelegramBotAbstract? telegramBotClient, Language s2,
         string? lang, string? usernameOfUser, long? userId, string? firstName, string? lastName,
-        long chatId, ChatType messageChatType, MessageEventArgs? messageEventArgs)
+        long chatId, ChatType messageChatType)
     {
         if (telegramBotClient == null)
             return;
@@ -172,50 +168,20 @@ public static class UsernameNameWarning
         var r2 = r1?.GetMessage();
         if (r2 == null) return;
 
-        var botIdValue = botid.Value;
         var timeUntilDelete = TimeSpan.FromMinutes(minutesWait);
         var timeToDelete = DateTime.Now + timeUntilDelete;
 
-        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
 
-        switch (r2)
+        MessageToRemoveUtil.AddMessageToDelete(chatId, telegramBotClient, GetId(r2), timeToDelete);
+    }
+
+    private static long? GetId(object r2)
+    {
+        return r2 switch
         {
-            case TLMessage r3:
-            {
-                lock (GlobalVariables.MessagesToDelete)
-                {
-                    var toDelete = new MessageToDelete(r3, chatId, timeToDelete, botIdValue,
-                        r1?.GetChatType(), null);
-                    GlobalVariables.MessagesToDelete.Add(toDelete);
-
-                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                        GlobalVariables.MessagesToDelete);
-                }
-
-                break;
-            }
-            case Message r4:
-            {
-                lock (GlobalVariables.MessagesToDelete)
-                {
-                    var toDelete = new MessageToDelete(r4, chatId, timeToDelete, botIdValue,
-                        r1?.GetChatType(), null);
-                    GlobalVariables.MessagesToDelete.Add(toDelete);
-
-                    FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                        GlobalVariables.MessagesToDelete);
-                }
-
-                break;
-            }
-            default:
-            {
-                var e4 = "Attempted to add a message to be deleted in queue\n" + r2.GetType() + " " + r2;
-                var e3 = new Exception(e4);
-                await NotifyUtil.NotifyOwnerWithLog2(e3, telegramBotClient,
-                    EventArgsContainer.Get(messageEventArgs));
-                return;
-            }
-        }
+            TLMessage r3 => r3.Id,
+            Message r4 => r4.MessageId,
+            _ => null
+        };
     }
 }

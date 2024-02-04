@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using PoliNetworkBot_CSharp.Code.Data.Constants;
 using PoliNetworkBot_CSharp.Code.Data.Variables;
 using PoliNetworkBot_CSharp.Code.Enums;
 using PoliNetworkBot_CSharp.Code.Objects;
@@ -635,32 +634,60 @@ public static class MessageDb
         return null;
     }
 
-    internal static async Task CheckMessageToDelete(MessageEventArgs? messageEventArgs)
+    internal static async Task CheckMessageToDelete(TelegramBotAbstract telegramBotAbstract)
     {
-        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
+        var id = telegramBotAbstract.GetId();
+        if (id == null)
+            return;
 
-        for (var i = 0; i < GlobalVariables.MessagesToDelete.Count;)
+        string q = "SELECT * FROM MessagesToRemove WHERE bot_id = @bot_id AND delete_when >= NOW()";
+        var dt = DatabaseUtils.Database.ExecuteSelect(q, telegramBotAbstract.DbConfig,
+            new Dictionary<string, object?>() { { "@bot_id", id.Value } });
+        if (dt == null)
+            return;
+        foreach (DataRow VARIABLE in dt.Rows)
         {
-            var m = GlobalVariables.MessagesToDelete[i];
-            if (m.ToDelete())
-                await DeleteSingleMessage(messageEventArgs, m, i);
-            else
-                i++;
+            try
+            {
+                if (VARIABLE != null)
+                {
+                    long message_id = Convert.ToInt64(VARIABLE["message_id"]);
+                    var chat_id = Convert.ToInt64(VARIABLE["chat_id"]);
+                    await DeleteAndUpdateTodoTable(message_id, chat_id, telegramBotAbstract);
+                }
+            }
+            catch
+            {
+                //ignored
+            }
         }
     }
 
-    private static async Task DeleteSingleMessage(MessageEventArgs? messageEventArgs, MessageToDelete m, int i)
+    private static async Task<bool> DeleteAndUpdateTodoTable(long messageId, long chatId,
+        TelegramBotAbstract telegramBotAbstract)
     {
-        GlobalVariables.MessagesToDelete ??= new List<MessageToDelete>();
+        GlobalVariables.Bots ??= new Dictionary<long, TelegramBotAbstract?>();
 
-        var success = await m.Delete(messageEventArgs);
-        if (!success) return;
-
-        lock (GlobalVariables.MessagesToDelete)
+        try
         {
-            GlobalVariables.MessagesToDelete.RemoveAt(i);
-            FileSerialization.WriteToBinaryFile(Paths.Bin.MessagesToDelete,
-                GlobalVariables.MessagesToDelete);
+            var s = await telegramBotAbstract.DeleteMessageAsync(chatId, messageId, null);
+            if (s)
+            {
+                string q = "DELETE FROM MessagesToRemove WHERE message_id = @message_id AND chat_id = @chat_id";
+                DatabaseUtils.Database.Execute(q, telegramBotAbstract.DbConfig,
+                    new Dictionary<string, object?>()
+                    {
+                        { "@message_id", messageId },
+                        { "@chat_id", chatId }
+                    });
+                return true;
+            }
         }
+        catch (Exception? e)
+        {
+            await NotifyUtil.NotifyOwnerWithLog2(e, telegramBotAbstract, null);
+        }
+
+        return false;
     }
 }
