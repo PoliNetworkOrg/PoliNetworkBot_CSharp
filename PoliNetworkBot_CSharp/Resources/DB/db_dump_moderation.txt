@@ -190,6 +190,14 @@ CREATE TABLE IF NOT EXISTS `Videos` (
   `mime` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE MessagesToRemove (
+    message_id BIGINT NOT NULL,
+    chat_id BIGINT NOT NULL,
+    bot_id BIGINT NOT NULL,
+    inserted_when DATETIME NOT NULL,
+    delete_when DATETIME NOT NULL,
+    PRIMARY KEY (message_id, chat_id)
+);
 -- L’esportazione dei dati non era selezionata.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
