@@ -12,7 +12,7 @@ public static class MessageToRemoveUtil
     {
         if (messageId == null)
             return;
-        
+
         const string q = """
                          INSERT INTO MessagesToRemove (message_id , chat_id, bot_id, inserted_when, delete_when)
                          VALUES (@message_id, @chat_id, @bot_id, @inserted_when, @delete_when)
@@ -24,7 +24,7 @@ public static class MessageToRemoveUtil
             { "@chat_id", chatId },
             { "@bot_id", idBot },
             { "@inserted_when", DateTime.Now },
-            { "@delete_when", deleteWhen },
+            { "@delete_when", deleteWhen }
         };
         Database.Execute(q, telegramBotAbstract?.DbConfig, keyValuePairs);
     }
