@@ -68,10 +68,7 @@ public static class ThreadAsyncModeration
         GlobalVariables.Bots ??= new Dictionary<long, TelegramBotAbstract?>();
         var telegramBotAbstracts = GlobalVariables.Bots.Keys.Select(keyBotId => GlobalVariables.Bots[keyBotId]);
         var threads = telegramBotAbstracts.Select(bot => new Thread(() => { CheckMessagesToDeleteAsync(bot); }));
-        foreach (var t2 in threads)
-        {
-            t2.Start();
-        }
+        foreach (var t2 in threads) t2.Start();
     }
 
     private static void ProgressiveLinkCheck()

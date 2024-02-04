@@ -640,18 +640,17 @@ public static class MessageDb
         if (id == null)
             return;
 
-        string q = "SELECT * FROM MessagesToRemove WHERE bot_id = @bot_id AND delete_when >= NOW()";
-        var dt = DatabaseUtils.Database.ExecuteSelect(q, telegramBotAbstract.DbConfig,
-            new Dictionary<string, object?>() { { "@bot_id", id.Value } });
+        var q = "SELECT * FROM MessagesToRemove WHERE bot_id = @bot_id AND delete_when >= NOW()";
+        var dt = Database.ExecuteSelect(q, telegramBotAbstract.DbConfig,
+            new Dictionary<string, object?> { { "@bot_id", id.Value } });
         if (dt == null)
             return;
         foreach (DataRow VARIABLE in dt.Rows)
-        {
             try
             {
                 if (VARIABLE != null)
                 {
-                    long message_id = Convert.ToInt64(VARIABLE["message_id"]);
+                    var message_id = Convert.ToInt64(VARIABLE["message_id"]);
                     var chat_id = Convert.ToInt64(VARIABLE["chat_id"]);
                     await DeleteAndUpdateTodoTable(message_id, chat_id, telegramBotAbstract);
                 }
@@ -660,7 +659,6 @@ public static class MessageDb
             {
                 //ignored
             }
-        }
     }
 
     private static async Task<bool> DeleteAndUpdateTodoTable(long messageId, long chatId,
@@ -673,9 +671,9 @@ public static class MessageDb
             var s = await telegramBotAbstract.DeleteMessageAsync(chatId, messageId, null);
             if (s)
             {
-                string q = "DELETE FROM MessagesToRemove WHERE message_id = @message_id AND chat_id = @chat_id";
-                DatabaseUtils.Database.Execute(q, telegramBotAbstract.DbConfig,
-                    new Dictionary<string, object?>()
+                var q = "DELETE FROM MessagesToRemove WHERE message_id = @message_id AND chat_id = @chat_id";
+                Database.Execute(q, telegramBotAbstract.DbConfig,
+                    new Dictionary<string, object?>
                     {
                         { "@message_id", messageId },
                         { "@chat_id", chatId }

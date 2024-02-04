@@ -13,10 +13,9 @@ public static class MessageToRemoveUtil
         if (messageId == null)
             return;
 
-        const string q = """
-                         INSERT INTO MessagesToRemove (message_id , chat_id, bot_id, inserted_when, delete_when)
-                         VALUES (@message_id, @chat_id, @bot_id, @inserted_when, @delete_when)
-                         """;
+        const string q = " INSERT INTO MessagesToRemove (message_id , chat_id, bot_id, inserted_when, delete_when) " +
+                         " VALUES " +
+                         "(@message_id, @chat_id, @bot_id, @inserted_when, @delete_when)";
         var idBot = telegramBotAbstract.GetId();
         var keyValuePairs = new Dictionary<string, object?>
         {
