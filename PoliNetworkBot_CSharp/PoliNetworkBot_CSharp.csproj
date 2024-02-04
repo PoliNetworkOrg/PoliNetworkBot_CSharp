@@ -5,6 +5,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <WarningsAsErrors>Nullable</WarningsAsErrors>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

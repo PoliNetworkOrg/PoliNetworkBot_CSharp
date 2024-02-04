@@ -23,7 +23,6 @@ public static class GlobalVariables
     public static List<long>? AllowedNoUsernameFromThisUserId;
     public static List<TelegramUser>? Owners;
     public static List<TelegramUser>? AllowedSpam;
-    public static List<MessageToDelete>? MessagesToDelete;
     public static List<WordToBeFirst>? WordToBeFirsts;
     public static List<long>? ExcludedChatsForBot;
     public static List<long>? NoUsernameCheckInThisChats;
@@ -43,7 +42,6 @@ public static class GlobalVariables
 
         _alreadyLoaded = true;
 
-        LoadMessagesToDelete();
         LoadMessagesThread();
 
         Creators = new List<TelegramUser>
@@ -175,17 +173,6 @@ public static class GlobalVariables
         }
     }
 
-    private static void LoadMessagesToDelete()
-    {
-        var m = FileSerialization.ReadFromBinaryFile<List<MessageToDelete>>(Paths.Bin.MessagesToDelete);
-        if (m is null or null)
-        {
-            MessagesToDelete = new List<MessageToDelete>();
-            return;
-        }
-
-        MessagesToDelete = m;
-    }
 
     internal static bool IsOwner(long id)
     {
