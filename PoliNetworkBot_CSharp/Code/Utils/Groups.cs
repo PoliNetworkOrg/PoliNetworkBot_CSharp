@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -50,19 +51,48 @@ internal static class Groups
         return Database.ExecuteSelect(q1, sender?.DbConfig);
     }
 
-    internal static DataTable? GetGroupsByTitle(string query, int limit, TelegramBotAbstract? sender)
+    internal static Tuple<DataTable?, int?> GetGroupsByTitle(string query, int limit, TelegramBotAbstract? sender)
     {
         const string? q1 = "SELECT id,title,link " +
                            "FROM GroupsTelegram " +
                            "WHERE title LIKE @title " +
                            "AND ( valid = 'Y' or valid = 1 ) LIMIT @limit";
+
         var seo = query.Split(" ");
         var query2 = seo.Aggregate("", (current, word) => current + ('%' + word));
         query2 += "%";
         var dictionary = new Dictionary<string, object?> { { "@title", query2 }, { "@limit", limit } };
         var dbConfigConnection = sender?.DbConfig;
-        return Database.ExecuteSelect(q1, dbConfigConnection,
-            dictionary);
+        var dt = Database.ExecuteSelect(q1, dbConfigConnection, dictionary);
+
+        var dtCount = GetCountGroupsByTitle(limit, query2, dbConfigConnection);
+        return new Tuple<DataTable?, int?>(dt, dtCount);
+    }
+
+    private static int? GetCountGroupsByTitle(int limit, string query2, DbConfigConnection? dbConfigConnection)
+    {
+        const string q2 = "SELECT COUNT(id) AS counted " +
+                          "FROM GroupsTelegram " +
+                          "WHERE title LIKE @title ";
+        var dictionary2 = new Dictionary<string, object?> { { "@title", query2 }, { "@limit", limit } };
+        var executeSelect = Database.ExecuteSelect(q2, dbConfigConnection, dictionary2);
+        var firstValueFromDataTable = Database.GetFirstValueFromDataTable(executeSelect);
+        var dtCount = TryConvertToInt(firstValueFromDataTable);
+        return dtCount;
+    }
+
+    private static int? TryConvertToInt(object? o)
+    {
+        try
+        {
+            return Convert.ToInt32(o);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return null;
     }
 
     internal static async Task<SuccessWithException?> CheckIfAdminAsync(long? userId, string? username, long? chatId,
@@ -422,24 +452,28 @@ internal static class Groups
         return CommandExecutionState.SUCCESSFUL;
     }
 
-    private static async Task<MessageSentResult?> SendGroupsByTitle(string query, TelegramBotAbstract? sender,
-        MessageEventArgs? e, int limit)
+    private static async Task<MessageSentResult?> SendGroupsByTitle(
+        string query,
+        TelegramBotAbstract? sender,
+        MessageEventArgs? e,
+        int limit
+    )
     {
         try
         {
             if (string.IsNullOrEmpty(query))
                 return null;
 
-            var groups = GetGroupsByTitle(query, limit, sender);
+            var (dataTable, countedGroups) = GetGroupsByTitle(query, limit, sender);
 
-            if (groups == null)
+            if (dataTable == null)
                 return null;
 
-            Logger.Logger.WriteLine("Groups search (1): " + groups.Rows.Count);
+            Logger.Logger.WriteLine("Groups search (1): " + dataTable.Rows.Count);
 
-            var indexTitle = groups.Columns.IndexOf("title");
-            var indexLink = groups.Columns.IndexOf("link");
-            var buttons = (from DataRow row in groups.Rows
+            var indexTitle = dataTable.Columns.IndexOf("title");
+            var indexLink = dataTable.Columns.IndexOf("link");
+            var buttons = (from DataRow row in dataTable.Rows
                 where !string.IsNullOrEmpty(row?[indexLink].ToString()) &&
                       !string.IsNullOrEmpty(row?[indexTitle]?.ToString())
                 select new InlineKeyboardButton(row[indexTitle].ToString() ?? "Error!")
@@ -451,29 +485,28 @@ internal static class Groups
 
             Logger.Logger.WriteLine("Groups search (2): " + buttonsMatrix?.Count);
 
-            var text2 = GetTextSearchResult(limit, buttonsMatrix);
+            var text2 = GetTextSearchResult(limit, buttonsMatrix, countedGroups);
 
             var inline = buttonsMatrix == null ? null : new InlineKeyboardMarkup(buttonsMatrix);
 
-            if (e is { Message.From: not null })
-                return e.Message.Chat.Type switch
-                {
-                    ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
-                        e.Message.From.Id,
-                        e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                        "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline,
-                        EventArgsContainer.Get(e)),
-                    ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
-                        .SendMessageInAGroup(
-                            sender,
-                            e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
-                            text2, EventArgsContainer.Get(e),
-                            e.Message.Chat.Id, e.Message.Chat.Type,
-                            ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, inline),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+            if (e is not { Message.From: not null }) return null;
 
-            return null;
+            return e.Message.Chat.Type switch
+            {
+                ChatType.Sender or ChatType.Private => await SendMessage.SendMessageInPrivate(sender,
+                    e.Message.From.Id,
+                    e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
+                    "", text2, ParseMode.Html, e.Message.ReplyToMessage?.MessageId, inline,
+                    EventArgsContainer.Get(e)),
+                ChatType.Group or ChatType.Channel or ChatType.Supergroup => await SendMessage
+                    .SendMessageInAGroup(
+                        sender,
+                        e.Message.ReplyToMessage?.From?.LanguageCode ?? e.Message.From?.LanguageCode,
+                        text2, EventArgsContainer.Get(e),
+                        e.Message.Chat.Id, e.Message.Chat.Type,
+                        ParseMode.Html, e.Message.ReplyToMessage?.MessageId, true, inline),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
         catch (Exception? exception)
         {
@@ -482,32 +515,26 @@ internal static class Groups
         }
     }
 
-    private static Language GetTextSearchResult(int limit, List<List<InlineKeyboardButton>>? buttonsMatrix)
+    private static Language GetTextSearchResult(
+        int limit,
+        ICollection? buttonsMatrix,
+        int? countedGroups
+    )
     {
-        return buttonsMatrix switch
+        var limitS = countedGroups <= limit ? "" : "(max " + limit + ")";
+        if (buttonsMatrix == null || buttonsMatrix.Count == 0)
         {
-            null => new Language(new Dictionary<string, string?>
-                {
-                    { "en", "<b>No results</b>." },
-                    { "it", "<b>Nessun risultato</b>." }
-                }
-            ),
-            _ => limit switch
+            return new Language(new Dictionary<string, string?>
             {
-                <= 0 => new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "<b>Here are the groups </b>:" },
-                        { "it", "<b>Ecco i gruppi</b>:" }
-                    }
-                ),
-                _ => new Language(new Dictionary<string, string?>
-                    {
-                        { "en", "<b>Here are the groups </b> (max " + limit + "):" },
-                        { "it", "<b>Ecco i gruppi</b> (max " + limit + "):" }
-                    }
-                )
-            }
-        };
+                { "en", "<b>No results</b>." }, { "it", "<b>Nessun risultato</b>." }
+            });
+        }
+
+        return new Language(new Dictionary<string, string?>
+        {
+            { "en", "<b>Here are the groups </b> " + limitS + ":" },
+            { "it", "<b>Ecco i gruppi</b> " + limitS + ":" }
+        });
     }
 
     public static async Task<CommandExecutionState> GetGroups(MessageEventArgs? e, TelegramBotAbstract? sender)
