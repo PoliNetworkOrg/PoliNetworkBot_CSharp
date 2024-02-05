@@ -55,10 +55,10 @@ public static class MassiveSendUtil
 
             var textToBeSent = e.Message.ReplyToMessage.Text;
             Logger.Logger.WriteLine("textToBeSent " + textToBeSent);
-            var groups = Groups.GetGroupsByTitle("polimi", 1000, sender);
-            var rowsCount = groups?.Rows.Count ?? -1;
+            var (dataTable, _) = Groups.GetGroupsByTitle("polimi", 1000, sender);
+            var rowsCount = dataTable?.Rows.Count ?? -1;
             Logger.Logger.WriteLine("rowsCount " + rowsCount);
-            return await MassiveSendSlaveAsync(sender, e, groups, textToBeSent, test);
+            return await MassiveSendSlaveAsync(sender, e, dataTable, textToBeSent, test);
         }
         catch (Exception ex)
         {
