@@ -521,7 +521,7 @@ internal static class Groups
         int? countedGroups
     )
     {
-        var limitS = countedGroups <= limit ? "" : "(max " + limit + ")";
+        var limitS = countedGroups <= limit ? "": "(max " + limit + ")";
         if (buttonsMatrix == null || buttonsMatrix.Count == 0)
         {
             return new Language(new Dictionary<string, string?>
