@@ -521,7 +521,7 @@ internal static class Groups
         int? countedGroups
     )
     {
-        var limitS = countedGroups <= limit ? "": "(max " + limit + ")";
+  
         if (buttonsMatrix == null || buttonsMatrix.Count == 0)
         {
             return new Language(new Dictionary<string, string?>
@@ -530,10 +530,11 @@ internal static class Groups
             });
         }
 
+        var limitS = countedGroups <= limit ? "": " (max " + limit + ")";
         return new Language(new Dictionary<string, string?>
         {
-            { "en", "<b>Here are the groups </b> " + limitS + ":" },
-            { "it", "<b>Ecco i gruppi</b> " + limitS + ":" }
+            { "en", "<b>Here are the groups </b>" + limitS + ":" },
+            { "it", "<b>Ecco i gruppi</b>" + limitS + ":" }
         });
     }
 
