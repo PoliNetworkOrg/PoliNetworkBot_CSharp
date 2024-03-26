@@ -24,6 +24,9 @@ internal static class Blacklist
 {
     private static readonly List<long> SpecialGroups = new() { -1001361547847, -452591994, -1001320704409 };
 
+    public static readonly List<long> ViaBotBanned = new() { 220030242, 99044899 };
+
+
     private static readonly List<string> BannedWords = new()
     {
         "porcodio", "dioporco", "diocane", "$ARB", "ARBITRUM"
