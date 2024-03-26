@@ -107,7 +107,7 @@ public static class CheckSpam
         if (messageViaBotId == null) return null;
         if (!Blacklist.Blacklist.ViaBotBanned.Contains(messageViaBotId.Value)) return null;
         return e?.Message.Chat.Id !=
-               1001129635578
+               -1001129635578
             ? //policazzeggio 2
             SpamType.SPAM_LINK
             : null;
