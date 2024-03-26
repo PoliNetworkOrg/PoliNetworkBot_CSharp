@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PoliNetworkBot_CSharp.Code.Bots.Moderation.Generic;
 using PoliNetworkBot_CSharp.Code.Enums;
@@ -64,6 +65,12 @@ public static class CheckSpam
                 return SpamType.ALL_GOOD;
         }
 
+
+        var s = CheckIfSpamBotMessage(e);
+        if (s == SpamType.SPAM_LINK)
+            return SpamType.SPAM_LINK;
+
+
         var isSpamStored = ModerationCheck.CheckIfSpamStored(e, telegramBotClient);
         if (isSpamStored != null)
             return isSpamStored.Value;
@@ -92,5 +99,17 @@ public static class CheckSpam
         var spamType2 = Blacklist.Blacklist.IsSpam(e?.Message.Photo);
         var s2 = SpamTypeUtil.Merge(spamType1, spamType2);
         return s2 ?? SpamType.ALL_GOOD;
+    }
+
+    private static SpamType? CheckIfSpamBotMessage(MessageEventArgs? e)
+    {
+        var messageViaBotId = e?.Message.ViaBot?.Id ?? e?.Message.ForwardFrom?.Id;
+        if (messageViaBotId == null) return null;
+        if (!Blacklist.Blacklist.ViaBotBanned.Contains(messageViaBotId.Value)) return null;
+        return e?.Message.Chat.Id !=
+               1001129635578
+            ? //policazzeggio 2
+            SpamType.SPAM_LINK
+            : null;
     }
 }
