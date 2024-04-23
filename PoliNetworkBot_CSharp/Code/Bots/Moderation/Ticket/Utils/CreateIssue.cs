@@ -13,6 +13,7 @@ public static class CreateIssue
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {
+        
         var githubInfo = chatIdTgWith100?.GithubInfo;
         var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
         if (githubClient == null)
@@ -61,7 +62,7 @@ public static class CreateIssue
             var owner = githubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
             var repo = githubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
 
-            var labelCreated = githubClient?.Issue.Labels
+            var labelCreated = githubClient.Issue.Labels
                 .Create(owner, repo, label).Result;
         }
         catch
