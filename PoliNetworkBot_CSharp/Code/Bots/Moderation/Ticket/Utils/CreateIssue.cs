@@ -13,7 +13,6 @@ public static class CreateIssue
         TelegramBotAbstract telegramBotAbstract, ChatIdTgWith100? chatIdTgWith100)
 
     {
-        
         var githubInfo = chatIdTgWith100?.GithubInfo;
         var githubClient = DataTicketClass.GetGitHubClient(telegramBotAbstract);
         if (githubClient == null)

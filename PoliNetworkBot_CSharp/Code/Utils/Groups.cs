@@ -521,16 +521,13 @@ internal static class Groups
         int? countedGroups
     )
     {
-  
         if (buttonsMatrix == null || buttonsMatrix.Count == 0)
-        {
             return new Language(new Dictionary<string, string?>
             {
                 { "en", "<b>No results</b>." }, { "it", "<b>Nessun risultato</b>." }
             });
-        }
 
-        var limitS = countedGroups <= limit ? "": " (max " + limit + ")";
+        var limitS = countedGroups <= limit ? "" : " (max " + limit + ")";
         return new Language(new Dictionary<string, string?>
         {
             { "en", "<b>Here are the groups </b>" + limitS + ":" },
