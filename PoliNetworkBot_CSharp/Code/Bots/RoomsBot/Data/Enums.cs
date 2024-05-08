@@ -48,19 +48,19 @@ public static class Enums
 
     public static readonly Dictionary<string, Function> MainMenuOptionsToFunction = new()
     {
-        ["📅 Occupazione Giornaliera"] = Function.OCCUPANCIES,
+        ["📅 Orario Completo"] = Function.OCCUPANCIES,
         ["🏫 Occupazione Aula"] = Function.ROOM_OCCUPANCY,
         ["🆓 Aule libere"] = Function.FREE_CLASSROOMS,
-        ["🕒 Ora"] = Function.FREE_CLASSROOMS_NOW,
+        ["🕒 Da ora"] = Function.FREE_CLASSROOMS_NOW,
         ["⚙ Imposta preferenze"] = Function.SETTINGS
     };
 
     public static readonly Dictionary<string, Function> MainMenuOptionsToStateEn = new()
     {
-        ["📅 Daily Occupancies"] = Function.OCCUPANCIES,
+        ["📅 Complete Schedule"] = Function.OCCUPANCIES,
         ["🏫 Classroom Occupancy"] = Function.ROOM_OCCUPANCY,
         ["🆓 Free Classrooms"] = Function.FREE_CLASSROOMS,
-        ["🕒 Now"] = Function.FREE_CLASSROOMS_NOW,
+        ["🕒 From now"] = Function.FREE_CLASSROOMS_NOW,
         ["⚙ Set defaults"] = Function.SETTINGS
     };
 
