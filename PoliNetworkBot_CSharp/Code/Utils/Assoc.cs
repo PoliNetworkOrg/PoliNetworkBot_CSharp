@@ -618,10 +618,15 @@ public static class Assoc
         // select the second ce-bodytext in the page, and of that div select the first child, which is the dotted ul
         // list with the associations name
         var elementsByTagAndClassName = HtmlUtil.GetElementsByTagAndClassName(doc.DocumentNode, "div", "ce-bodytext");
-        var assocUl = elementsByTagAndClassName?[1]
-            ?.ChildNodes[0];
-        // map each li element to its inner text, from which only the name should be taken
-        return assocUl?.ChildNodes.Select(li => li.InnerText.Split('[')[0].Replace("&nbsp;", " ").Trim()).ToList();
+        if (elementsByTagAndClassName != null && elementsByTagAndClassName.Count > 1)
+        {
+            var assocUl = elementsByTagAndClassName?[1]
+                ?.ChildNodes[0];
+            // map each li element to its inner text, from which only the name should be taken
+            return assocUl?.ChildNodes.Select(li => li.InnerText.Split('[')[0].Replace("&nbsp;", " ").Trim()).ToList();
+        }
+
+        return null;
     }
 
     /// <summary>
