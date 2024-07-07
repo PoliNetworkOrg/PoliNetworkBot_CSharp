@@ -21,6 +21,9 @@ public static class GroupsConstants
 
     public static readonly ChatIdTgWith100 PianoDiStudi = new()
         { Id = 1208900229, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Piano Studi" } };
+    
+    public static readonly ChatIdTgWith100 ConsiglioPc = new()
+        { Id = 1301302097, VaAggiuntoMeno100 = true, GithubInfo = new GithubInfo { CategoryGithub = "Consiglio PC" } };
 
     public static readonly ChatIdTgWith100 AskPolimi = new()
         { Id = 1251460298, VaAggiuntoMeno100 = true };
