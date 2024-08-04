@@ -61,7 +61,7 @@ public static class CreateIssue
             var owner = githubInfo?.CustomOwnerGithub ?? DataTicketClass.OwnerRepo;
             var repo = githubInfo?.CustomRepoGithub ?? DataTicketClass.NameRepo;
 
-            var labelCreated = githubClient?.Issue.Labels
+            var labelCreated = githubClient.Issue.Labels
                 .Create(owner, repo, label).Result;
         }
         catch

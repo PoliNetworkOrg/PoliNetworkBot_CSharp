@@ -30,8 +30,7 @@ public static class ThreadAsyncModeration
         var t = new Thread(CheckMessagesToSend);
         t.Start();
 
-        var t2 = new Thread(CheckMessagesToDeleteAsync);
-        t2.Start();
+        CheckMessageToDelete();
 
         var t4 = new Thread(DoBackupAndMessageStore);
         t4.Start();
@@ -62,6 +61,14 @@ public static class ThreadAsyncModeration
 
         //var t3 = new Thread(FixThings);
         //t3.Start();
+    }
+
+    private static void CheckMessageToDelete()
+    {
+        GlobalVariables.Bots ??= new Dictionary<long, TelegramBotAbstract?>();
+        var telegramBotAbstracts = GlobalVariables.Bots.Keys.Select(keyBotId => GlobalVariables.Bots[keyBotId]);
+        var threads = telegramBotAbstracts.Select(bot => new Thread(() => { CheckMessagesToDeleteAsync(bot); }));
+        foreach (var t2 in threads) t2.Start();
     }
 
     private static void ProgressiveLinkCheck()
@@ -301,13 +308,15 @@ public static class ThreadAsyncModeration
         return null;
     }
 
-    private static async void CheckMessagesToDeleteAsync()
+    private static async void CheckMessagesToDeleteAsync(TelegramBotAbstract? telegramBotAbstract)
     {
+        if (telegramBotAbstract == null)
+            return;
         while (true)
         {
             try
             {
-                await MessageDb.CheckMessageToDelete(null);
+                await MessageDb.CheckMessageToDelete(telegramBotAbstract);
             }
             catch (Exception? e)
             {

@@ -50,6 +50,11 @@ public static class SwitchDispatcher
             Permission.USER,
             new L("en", "This Menu @args: (optional) specific command to describe", "it",
                 "Questo menu @args: (optional) spiegazione per un comando"), null, null),
+        
+        new Command("privacy", CommandDispatcher.PrivacyPrivate, new List<ChatType> { ChatType.Private },
+            Permission.USER,
+            new L("en", "Show PoliNetwork contact's information", "it",
+                "Mostra le informazioni per contattare PoliNetwork"), null, null),
 
         new Command("help_all", CommandDispatcher.HelpExtended, new List<ChatType> { ChatType.Private },
             Permission.USER,
