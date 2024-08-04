@@ -796,6 +796,33 @@ internal static class CommandDispatcher
             await Help.HelpSpecific(e, sender, args);
         return CommandExecutionState.SUCCESSFUL;
     }
+    
+    public static async Task<CommandExecutionState> PrivacyPrivate(MessageEventArgs? e, TelegramBotAbstract? telegramBotClient,
+        string[]? args)
+    {
+        await DeleteMessage.DeleteIfMessageIsNotInPrivate(telegramBotClient, e?.Message);
+        if (telegramBotClient == null)
+            return CommandExecutionState.ERROR_DEFAULT;
+
+        var lang2 = new Language(new Dictionary<string, string?>
+        {
+            { "it", "Puoi contattare privacy@polinetwork.org"},
+            { "en", "You can contact privacy@polinetwork.org"}
+        });
+
+        var messageOptions = new MessageOptions
+        {
+            ChatId = e?.Message.Chat.Id,
+            Text = lang2,
+            ChatType = e?.Message.Chat.Type,
+            Lang = e?.Message.From?.LanguageCode,
+            ParseMode = ParseMode.Html,
+            ReplyMarkupObject = new ReplyMarkupObject(ReplyMarkupEnum.REMOVE),
+            Username = e?.Message.From?.Username
+        };
+        await telegramBotClient.SendTextMessageAsync(messageOptions);
+        return CommandExecutionState.SUCCESSFUL;
+    }
 
     public static async Task<CommandExecutionState> ContactUs(MessageEventArgs? e,
         TelegramBotAbstract? telegramBotClient)
