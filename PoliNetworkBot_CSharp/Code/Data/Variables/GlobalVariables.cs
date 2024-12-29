@@ -79,25 +79,25 @@ public static class GlobalVariables
 
         AllowedBanAll = new List<TelegramUser>
         {
-            new(5651789),
-            new("raif9"),
-            new("eliamaggioni"),
+            new(5651789), // spyarect
+            new(414557820), // elisabeta hoxhaj
+            new(186407195), // lorenzocorallo
             new(992285066) // Tommaso
         };
 
         AllowedMuteAll = new List<TelegramUser>
         {
-            new(5651789),
-            new("raif9"),
-            new("eliamaggioni"),
+            new(5651789), // spyarect
+            new(414557820), // elisabeta hoxhaj
+            new(186407195), // lorenzocorallo
             new(992285066) // Tommaso
         };
 
         AllowedSpam = new List<TelegramUser>
         {
-            new(5651789),
-            new("raif9"),
-            new("eliamaggioni"),
+            new(5651789), // spyarect
+            new(414557820), // elisabeta hoxhaj
+            new(186407195), // lorenzocorallo
             new(992285066), // Tommaso
             new(349275135), //policreator
             new(1051414781), //polinetwork,
@@ -116,8 +116,8 @@ public static class GlobalVariables
 
         Owners = new List<TelegramUser>
         {
-            new(5651789),
-            new(107050697, "eliamaggioni"),
+            new(5651789), // spyarect
+            new(186407195), // lorenzocorallo
             new(992285066) // Tommaso
         };
 
